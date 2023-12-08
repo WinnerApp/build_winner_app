@@ -1,0 +1,47 @@
+import 'dart:io';
+
+import 'package:build_winner_app/common/define.dart';
+import 'package:color_logger/color_logger.dart';
+import 'package:process_run/process_run.dart';
+
+class GetGitLog {
+  final String root;
+  final String lastCommitId;
+  final String currentCommitId;
+
+  GetGitLog({
+    required this.root,
+    required this.lastCommitId,
+    required this.currentCommitId,
+  });
+
+  Future<String?> get() async {
+    logger.log('[git log $currentCommitId..$lastCommitId]');
+    ProcessResult result;
+    if (currentCommitId.isEmpty) {
+      result = await runCommand(root, 'git log -1').then(
+        (value) => value.first,
+      );
+    } else {
+      result = await runCommand(root, 'git log $currentCommitId..$lastCommitId')
+          .then(
+        (value) => value.first,
+      );
+    }
+    if (result.exitCode != 0) {
+      logger.log(result.errText, status: LogStatus.error);
+      return null;
+    }
+    final messages = <String>[];
+    for (var element in result.outLines) {
+      /// 删除日志左右的空格
+      final message = element.trim();
+      if (message.isEmpty) continue;
+      if (message.isNotEmpty) {
+        messages.add(message);
+      }
+    }
+    final logContent = messages.join('\n');
+    return logContent;
+  }
+}
