@@ -34,7 +34,7 @@ class IosCommand extends BaseBuildCommand {
     logger.log('导出iOS Unity最新的包成功!', status: LogStatus.success);
 
     final fix = FixIosUnityCache(
-      root: environment.workspace,
+      root: environment.unityWorkspace,
       iosUnityPath: unityPath,
     );
     final fixResult = await fix.fix();
@@ -83,11 +83,14 @@ class IosCommand extends BaseBuildCommand {
   String get unityFullPath => environment.iosUnityFullPath;
 
   @override
-  String get platformFileName => '.ios_build_id';
+  String get platformFileName => '.ios_build_id.json';
 
   @override
   String get logHeader => '✅iOS新测试包已经发布!';
 
   @override
   String get logFooter => '👉请前往TestFlight查看';
+
+  @override
+  String get dingdingHookUrl => environment.iosHookUrl;
 }

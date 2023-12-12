@@ -6,6 +6,7 @@ import 'package:build_winner_app/build_id.dart';
 import 'package:build_winner_app/commands/base_command.dart';
 import 'package:build_winner_app/commands/build/android_command.dart';
 import 'package:build_winner_app/commands/build/ios_command.dart';
+import 'package:build_winner_app/common/build_config.dart';
 import 'package:build_winner_app/common/define.dart';
 import 'package:build_winner_app/environment.dart';
 import 'package:build_winner_app/get_git_log.dart';
@@ -54,6 +55,13 @@ abstract class BaseBuildCommand extends Command {
 
     await setupFastlane.setup();
 
+    final buildConfigFilePath =
+        File(join(environment.workspace, platformFileName));
+    final buildConfigManager =
+        BuildConfigManager(filePath: buildConfigFilePath.path);
+
+    final buildConfig = await buildConfigManager.getBuildConfig();
+
     /// 获取Unity项目的本地提交
     final localUnityCommit = await getGitLastCommitHash(unityFullPath);
     logger.log('本地Unity提交: $localUnityCommit');
@@ -62,16 +70,14 @@ abstract class BaseBuildCommand extends Command {
     final remoteUnityCommit = await getGitLastCommitHash(unityFullPath);
     logger.log('网络上最新的Unity提交: $remoteUnityCommit');
 
+    final unityBuildId = BuildId(root: unityFullPath);
+
     /// 获取上一次Unity打包的ID
-    final lastUnityBuildId = await BuildId(
-          root: unityFullPath,
-          fileName: platformFileName,
-        ).buildId ??
-        "";
+    final lastUnityBuildId = await unityBuildId.buildId ?? "";
     logger.log('上一次Unity打包的ID: $lastUnityBuildId');
 
     /// Unity是否需要更新 通过本地和远程的对比 可以防止打包失败了 但是依然需要重新导包
-    bool needUpdateUnity = localUnityCommit != remoteUnityCommit;
+    bool needUpdateUnity = lastUnityBuildId != remoteUnityCommit;
 
     final fromUnityFrameworkPath =
         join(environment.unityWorkspace, unityFrameworkPath);
@@ -79,11 +85,15 @@ abstract class BaseBuildCommand extends Command {
     if (!needUpdateUnity && await Directory(fromUnityFrameworkPath).exists()) {
       logger.log('$unityFullPath 不需要更新已经跳过!', status: LogStatus.success);
     } else {
-      // 更新代码
-      await updateGitBranch(unityFullPath);
+      if (localUnityCommit != remoteUnityCommit) {
+        // 更新代码
+        await updateGitBranch(unityFullPath);
+      }
 
       /// 导出Unity包
       await updateUnity(unityFullPath);
+
+      await unityBuildId.setBuildId(remoteUnityCommit);
     }
 
     /// 复制最新的Unity资源
@@ -95,16 +105,17 @@ abstract class BaseBuildCommand extends Command {
       await Directory(toUnityFrameworkPath).delete(recursive: true);
     }
 
-    final buildUnityDir = Directory(join(fromUnityFrameworkPath, 'build'));
-    if (await buildUnityDir.exists()) {
-      await buildUnityDir.delete(recursive: true);
-    }
-
     /// 复制缓存到对应的目录
     await runCommand(
       environment.workspace,
       'cp -rf $fromUnityFrameworkPath $toUnityFrameworkPath',
     );
+
+    /// 如果是安卓项目则删除build目录
+    final buildUnityDir = Directory(join(toUnityFrameworkPath, 'build'));
+    if (await buildUnityDir.exists()) {
+      await buildUnityDir.delete(recursive: true);
+    }
 
     final localRootCommit = await getGitLastCommitHash(environment.workspace);
     logger.log('本地项目提交: $localRootCommit');
@@ -112,15 +123,9 @@ abstract class BaseBuildCommand extends Command {
     final remoteRootCommit = await getGitLastCommitHash(environment.workspace);
     logger.log('网络上最新的项目提交: $remoteRootCommit');
 
-    final lastRootBuildId = await BuildId(
-          root: environment.workspace,
-          fileName: platformFileName,
-        ).buildId ??
-        "";
-    logger.log('上一次项目打包的ID: $lastRootBuildId');
-    await BuildId(root: environment.workspace).setBuildId(lastRootBuildId);
+    logger.log('上一次项目打包的ID: ${buildConfig.flutter}');
 
-    bool needUpdateRoot = lastRootBuildId != remoteRootCommit;
+    bool needUpdateRoot = buildConfig.flutter != remoteRootCommit;
     if (!needUpdateRoot) {
       if (!needUpdateUnity) {
         logger.log('没有任何的变动，打包停止!', status: LogStatus.warning);
@@ -153,7 +158,7 @@ abstract class BaseBuildCommand extends Command {
       final unityLog = await GetGitLog(
         root: environment.unityWorkspace,
         lastCommitId: remoteUnityCommit,
-        currentCommitId: lastUnityBuildId,
+        currentCommitId: buildConfig.unity,
       ).get();
 
       if (JSON(unityLog).stringValue.isNotEmpty) {
@@ -170,7 +175,7 @@ $unityLog
       final rootLog = await GetGitLog(
         root: environment.workspace,
         lastCommitId: remoteRootCommit,
-        currentCommitId: lastRootBuildId,
+        currentCommitId: buildConfig.flutter,
       ).get();
 
       if (JSON(rootLog).stringValue.isNotEmpty) {
@@ -194,12 +199,16 @@ $logFooter
 ''';
       await sendWeChat(log);
       logger.log('发送更新日志到企业微信完成', status: LogStatus.success);
+
+      await sendTextToWeixinWebhooks(log, dingdingHookUrl);
+
+      logger.log('发送更新日志到钉钉完成', status: LogStatus.success);
     }
 
-    await BuildId(root: unityFullPath, fileName: platformFileName)
-        .setBuildId(remoteUnityCommit);
-    await BuildId(root: environment.workspace, fileName: platformFileName)
-        .setBuildId(remoteRootCommit);
+    await buildConfigManager.setBuildConfig(BuildConfig(
+      flutter: remoteRootCommit,
+      unity: remoteUnityCommit,
+    ));
 
     logger.log('✅打包完成', status: LogStatus.success);
     exit(0);
@@ -240,4 +249,6 @@ $logFooter
   SetupFastlane get setupFastlane;
 
   int get buildNumber => DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
+  String get dingdingHookUrl;
 }

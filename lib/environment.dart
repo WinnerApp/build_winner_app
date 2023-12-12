@@ -47,6 +47,9 @@ class Environment {
   /// 打包的名称
   late String buildName;
 
+  late String dingdingIosHookUrl;
+  late String dingdingAndroidHookUrl;
+
   setup() {
     workspace = env('WORKSPACE');
     iosHookUrl = env('IOS_HOOK_URL');
@@ -62,8 +65,8 @@ class Environment {
     androidUnityPath = env('ANDROID_UNITY_PATH');
     unityEnginePath = env('UNITY_ENGINE_PATH');
     buildName = env('BUILD_NAME');
-    // ipaPath = env('IPA_PATH');
-    // apkPath = env('APK_PATH');
+    dingdingIosHookUrl = env('DINGDING_IOS_HOOK_URL');
+    dingdingAndroidHookUrl = env('DINGDING_ANDROID_HOOK_URL');
   }
 
   String env(String name) {

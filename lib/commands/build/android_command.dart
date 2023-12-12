@@ -103,11 +103,14 @@ flutter.minSdkVersion=20
   String get unityFrameworkPath => 'android/unityLibrary';
 
   @override
-  String get platformFileName => '.android_build_id';
+  String get platformFileName => '.android_build_id.json';
 
   @override
   String get logHeader => '✅Android 新测试包已经发布!';
 
   @override
   String get logFooter => '👉请前往蒲公英下载';
+
+  @override
+  String get dingdingHookUrl => environment.dingdingAndroidHookUrl;
 }
