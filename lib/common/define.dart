@@ -41,7 +41,7 @@ Future<String> getGitLastCommitHash(String root) async {
     'git log -n 1 --pretty=format:"%H"',
     ignoreError: true,
   );
-  return result.first.stdout;
+  return result.first.stdout.toString().trim();
 }
 
 /// 获取代码的远程分支的最新哈希
@@ -61,7 +61,7 @@ git fetch origin
     final reg = RegExp('[0-9+a-z]*');
     return reg.firstMatch(value.first.stdout.toString())!.group(0);
   });
-  return remoteCommitHashCode!;
+  return remoteCommitHashCode!.trim();
 }
 
 /// 检查代码是否是最新

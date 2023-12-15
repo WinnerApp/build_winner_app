@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:build_winner_app/common/define.dart';
 import 'package:color_logger/color_logger.dart';
 import 'package:path/path.dart';
+import 'package:process_run/process_run.dart';
 
 abstract class SetupFastlane {
   final String root;
@@ -12,6 +13,12 @@ abstract class SetupFastlane {
   String get fastlaneContent;
 
   Future setup() async {
+    final fastlane = await which('fastlane');
+    if (fastlane == null) {
+      logger.log('fastlane未安装', status: LogStatus.error);
+      exit(2);
+    }
+
     logger.log('正在初始化Fastlane配置');
     if (!await fastlaneFile(root).exists()) {
       await fastlaneFile(root).create(recursive: true);

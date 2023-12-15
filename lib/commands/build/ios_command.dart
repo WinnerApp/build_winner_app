@@ -3,13 +3,13 @@ import 'dart:io';
 
 import 'package:build_winner_app/build_app.dart';
 import 'package:build_winner_app/commands/build/build_command.dart';
+import 'package:build_winner_app/common/build_config.dart';
 import 'package:build_winner_app/common/define.dart';
 import 'package:build_winner_app/fix_ios_unity_cache.dart';
 import 'package:build_winner_app/setup_fastlane.dart';
 import 'package:build_winner_app/update_unity.dart';
 import 'package:color_logger/color_logger.dart';
 import 'package:path/path.dart';
-import 'package:process_run/process_run.dart';
 import 'package:yaml/yaml.dart';
 
 class IosCommand extends BaseBuildCommand {
@@ -92,5 +92,10 @@ class IosCommand extends BaseBuildCommand {
   String get logFooter => '👉请前往TestFlight查看';
 
   @override
-  String get dingdingHookUrl => environment.iosHookUrl;
+  String get dingdingHookUrl => environment.dingdingIosHookUrl;
+
+  @override
+  BuildInfo getBuildInfo(BuildConfig buildConfig) {
+    return buildConfig.ios;
+  }
 }

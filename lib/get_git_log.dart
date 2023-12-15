@@ -17,6 +17,10 @@ class GetGitLog {
 
   Future<String?> get() async {
     logger.log('[git log $currentCommitId..$lastCommitId]');
+    if (lastCommitId.isEmpty) {
+      logger.log('lastCommitId is empty', status: LogStatus.error);
+      exit(2);
+    }
     ProcessResult result;
     if (currentCommitId.isEmpty) {
       result = await runCommand(root, 'git log -1').then(

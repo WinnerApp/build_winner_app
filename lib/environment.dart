@@ -49,6 +49,7 @@ class Environment {
 
   late String dingdingIosHookUrl;
   late String dingdingAndroidHookUrl;
+  late String branch;
 
   setup() {
     workspace = env('WORKSPACE');
@@ -67,6 +68,7 @@ class Environment {
     buildName = env('BUILD_NAME');
     dingdingIosHookUrl = env('DINGDING_IOS_HOOK_URL');
     dingdingAndroidHookUrl = env('DINGDING_ANDROID_HOOK_URL');
+    branch = env('BRANCH').replaceFirst('origin/', '');
   }
 
   String env(String name) {

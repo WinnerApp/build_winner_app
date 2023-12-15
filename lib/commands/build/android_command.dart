@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:build_winner_app/build_app.dart';
 import 'package:build_winner_app/commands/build/build_command.dart';
+import 'package:build_winner_app/common/build_config.dart';
 import 'package:build_winner_app/common/define.dart';
 import 'package:build_winner_app/setup_fastlane.dart';
 import 'package:build_winner_app/update_unity.dart';
@@ -113,4 +114,9 @@ flutter.minSdkVersion=20
 
   @override
   String get dingdingHookUrl => environment.dingdingAndroidHookUrl;
+
+  @override
+  BuildInfo getBuildInfo(BuildConfig buildConfig) {
+    return buildConfig.android;
+  }
 }
