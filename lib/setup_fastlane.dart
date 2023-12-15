@@ -90,13 +90,20 @@ end
 #
 # Ensure this file is checked in to source control!
 
-gem 'fastlane-plugin-pgyer'
+source "https://rubygems.org"
+
+gem 'fastlane'
+
+plugins_path = File.join(File.dirname(__FILE__), 'fastlane', 'Pluginfile')
+eval_gemfile(plugins_path) if File.exist?(plugins_path)
 ''';
 
-    final pluginFile = File(join(root, 'android', 'fastlane', 'Pluginfile'));
+    final pluginFile = File(join(root, 'android', 'Gemfile'));
     if (!await pluginFile.exists()) {
       await pluginFile.create(recursive: true);
     }
     await pluginFile.writeAsString(pluginFileContent);
+
+    await runCommand(join(root, 'android'), 'fastlane add_plugin pgyer');
   }
 }

@@ -1,3 +1,7 @@
+## v1.0.3
+
+- [Add]    新增初始化安卓Fastlane会自动添加插件`pgyer`
+
 ## v1.0.2
 
 - [Add]    环境配置新增BRANCH参数（origin/dev_mobshare）
