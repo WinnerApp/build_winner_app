@@ -53,6 +53,7 @@ abstract class BaseBuildCommand extends Command {
   FutureOr? run() async {
     /// 是否跳过Unity自动更新
     final skipUnityUpdate = JSON(argResults?['skipUnityUpdate']).boolValue;
+    logger.log('skipUnityUpdate: $skipUnityUpdate', status: LogStatus.debug);
 
     environment.setup();
 
@@ -72,13 +73,17 @@ abstract class BaseBuildCommand extends Command {
     /// 获取打包配置
     final buildConfig = await buildConfigManager.getBuildConfig();
 
-    /// 获取Unity项目的本地提交
-    final localUnityCommit = await getGitLastCommitHash(unityFullPath);
-    logger.log('本地Unity提交: $localUnityCommit');
+    String? localUnityCommit;
+    String? remoteUnityCommit;
+    if (!skipUnityUpdate) {
+      /// 获取Unity项目的本地提交
+      localUnityCommit = await getGitLastCommitHash(unityFullPath);
+      logger.log('本地Unity提交: $localUnityCommit');
 
-    /// 获取网络上最新的Unity提交
-    final remoteUnityCommit = await getGitLastRemoteCommitHash(unityFullPath);
-    logger.log('网络上最新的Unity提交: $remoteUnityCommit');
+      /// 获取网络上最新的Unity提交
+      remoteUnityCommit = await getGitLastRemoteCommitHash(unityFullPath);
+      logger.log('网络上最新的Unity提交: $remoteUnityCommit');
+    }
 
     /// 获取当前打包平台的上一次打包配置
     final buildInfo = getBuildInfo(buildConfig);
@@ -124,7 +129,7 @@ abstract class BaseBuildCommand extends Command {
       /// 获取Unity更新日志
       final unityLog = await GetGitLog(
         root: unityFullPath,
-        lastCommitId: remoteUnityCommit,
+        lastCommitId: remoteUnityCommit!,
         currentCommitId: buildInfo.unity.log,
       ).get();
 
@@ -179,7 +184,7 @@ $log
     } else {
       /// 导出Unity包
       await updateUnity(unityFullPath);
-      buildInfo.unity.cache = remoteUnityCommit;
+      buildInfo.unity.cache = remoteUnityCommit!;
 
       /// 更新当前最后一次Unity缓存的ID
       await buildConfigManager.setBuildConfig(buildConfig);
@@ -191,21 +196,23 @@ $log
       unityFrameworkPath,
     );
 
-    /// 将最新的Unity复制到打包的项目
-    if (await Directory(toUnityFrameworkPath).exists()) {
-      await Directory(toUnityFrameworkPath).delete(recursive: true);
-    }
+    if (skipUnityUpdate || toUnityFrameworkPath == fromUnityFrameworkPath) {
+      /// 将最新的Unity复制到打包的项目
+      if (await Directory(toUnityFrameworkPath).exists()) {
+        await Directory(toUnityFrameworkPath).delete(recursive: true);
+      }
 
-    /// 复制缓存到对应的目录
-    await runCommand(
-      environment.workspace,
-      'cp -rf $fromUnityFrameworkPath $toUnityFrameworkPath',
-    );
+      /// 复制缓存到对应的目录
+      await runCommand(
+        environment.workspace,
+        'cp -rf $fromUnityFrameworkPath $toUnityFrameworkPath',
+      );
 
-    /// 如果是安卓项目则删除build目录
-    final buildUnityDir = Directory(join(toUnityFrameworkPath, 'build'));
-    if (await buildUnityDir.exists()) {
-      await buildUnityDir.delete(recursive: true);
+      /// 如果是安卓项目则删除build目录
+      final buildUnityDir = Directory(join(toUnityFrameworkPath, 'build'));
+      if (await buildUnityDir.exists()) {
+        await buildUnityDir.delete(recursive: true);
+      }
     }
 
     /// 判断是否需要更新
@@ -233,7 +240,9 @@ $log
 
     /// 打包完毕更新打包配置
     buildInfo.flutter = remoteRootCommit;
-    buildInfo.unity.log = remoteUnityCommit;
+    if (!skipUnityUpdate) {
+      buildInfo.unity.log = remoteUnityCommit!;
+    }
     await buildConfigManager.setBuildConfig(buildConfig);
 
     logger.log('✅打包完成', status: LogStatus.success);

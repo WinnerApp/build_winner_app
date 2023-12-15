@@ -1,3 +1,9 @@
+
+
+## V1.0.4
+
+- [Add]	新增使用`skipUnityUpdate`参数可以支持不用设置`unity`相关的参数
+
 ## v1.0.3
 
 - [Add]    新增初始化安卓Fastlane会自动添加插件`pgyer`

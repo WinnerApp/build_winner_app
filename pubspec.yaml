@@ -1,5 +1,5 @@
 name: build_winner_app
-description: A sample command-line application.
+description: 自动化打包稳健医疗App工具.
 version: 1.0.3
 # repository: https://github.com/my_org/my_repo
 
