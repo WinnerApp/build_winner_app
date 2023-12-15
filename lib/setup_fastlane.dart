@@ -104,6 +104,6 @@ eval_gemfile(plugins_path) if File.exist?(plugins_path)
     }
     await pluginFile.writeAsString(pluginFileContent);
 
-    await runCommand(join(root, 'android'), 'fastlane add_plugin pgyer');
+    // await runCommand(join(root, 'android'), 'fastlane add_plugin pgyer');
   }
 }

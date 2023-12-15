@@ -1,4 +1,7 @@
 
+## v1.0.5
+
+- [Remove] 移除`fastlane add_plugin pgyer`命令改为手动
 
 ## V1.0.4
 
