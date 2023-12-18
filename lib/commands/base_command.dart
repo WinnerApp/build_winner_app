@@ -6,7 +6,5 @@ abstract class BaseCommand extends Command {
   Environment environment = Environment();
 
   @override
-  FutureOr? run() async {
-    environment.setup();
-  }
+  FutureOr? run() async {}
 }

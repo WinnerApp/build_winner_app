@@ -5,6 +5,7 @@ import 'package:build_winner_app/build_app.dart';
 import 'package:build_winner_app/commands/build/build_command.dart';
 import 'package:build_winner_app/common/build_config.dart';
 import 'package:build_winner_app/common/define.dart';
+import 'package:build_winner_app/environment.dart';
 import 'package:build_winner_app/fix_ios_unity_cache.dart';
 import 'package:build_winner_app/setup_fastlane.dart';
 import 'package:build_winner_app/update_unity.dart';
@@ -20,10 +21,10 @@ class IosCommand extends BaseBuildCommand {
   String get name => 'ios';
 
   @override
-  Future updateUnity(String unityPath) async {
+  Future updateUnity(UnityEnvironment unityEnvironment) async {
     final updateUnity = UpdateUnity(
-      workspace: unityPath,
-      unityEnginePath: environment.unityEnginePath,
+      workspace: unityEnvironment.iosUnityFullPath,
+      unityEnginePath: unityEnvironment.unityEnginePath,
       platform: UnityPlatform.ios,
     );
     final result = await updateUnity.update();
@@ -34,8 +35,8 @@ class IosCommand extends BaseBuildCommand {
     logger.log('导出iOS Unity最新的包成功!', status: LogStatus.success);
 
     final fix = FixIosUnityCache(
-      root: environment.unityWorkspace,
-      iosUnityPath: unityPath,
+      root: unityEnvironment.unityWorkspace,
+      iosUnityPath: unityEnvironment.iosUnityFullPath,
     );
     final fixResult = await fix.fix();
     if (!fixResult) {
@@ -80,10 +81,7 @@ class IosCommand extends BaseBuildCommand {
   String get unityFrameworkPath => 'ios/UnityLibrary';
 
   @override
-  String get unityFullPath => environment.iosUnityFullPath;
-
-  @override
-  String get platformFileName => '.ios_build_id.json';
+  String? get unityFullPath => environment.unityEnvironment?.iosUnityFullPath;
 
   @override
   String get logHeader => '✅iOS新测试包已经发布!';

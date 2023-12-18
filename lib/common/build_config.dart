@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:build_winner_app/common/define.dart';
+import 'package:color_logger/color_logger.dart';
 import 'package:darty_json_safe/darty_json_safe.dart';
 
 class BuildConfig {
@@ -72,6 +74,11 @@ class BuildConfigManager {
   const BuildConfigManager({required this.filePath});
 
   Future<BuildConfig> getBuildConfig() async {
+    if (!await File(filePath).exists()) {
+      logger.log('$filePath路径不存在!', status: LogStatus.error);
+      exit(2);
+    }
+
     final buildConfigText = await File(filePath).readAsString();
     final buildConfigJson = JSON(buildConfigText);
     final buildConfig = BuildConfig.fromJson(buildConfigJson.mapValue

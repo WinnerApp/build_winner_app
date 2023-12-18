@@ -1,3 +1,15 @@
+## v1.0.8
+
+- [Change] 重构了逻辑 如果`skipUnityUpdate=true`则忽略获取Unity相关参数，逻辑更加清晰。
+- [Add] 新增`--tag`参数来标识当前打包方来源
+
+## v1.0.7
+
+- [Fix] 修复`skipUnityUpdate`参数依然走Unity打包操作
+
+## v1.0.6
+
+- [Fix] 修复`skipUnityUpdate`参数依然走Unity打包操作
 
 ## v1.0.5
 

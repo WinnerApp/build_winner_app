@@ -5,6 +5,7 @@ import 'package:build_winner_app/build_app.dart';
 import 'package:build_winner_app/commands/build/build_command.dart';
 import 'package:build_winner_app/common/build_config.dart';
 import 'package:build_winner_app/common/define.dart';
+import 'package:build_winner_app/environment.dart';
 import 'package:build_winner_app/setup_fastlane.dart';
 import 'package:build_winner_app/update_unity.dart';
 import 'package:color_logger/color_logger.dart';
@@ -18,10 +19,10 @@ class AndroidCommand extends BaseBuildCommand {
   String get name => 'android';
 
   @override
-  Future updateUnity(String unityPath) async {
+  Future updateUnity(UnityEnvironment unityEnvironment) async {
     final success = await UpdateUnity(
-      workspace: unityPath,
-      unityEnginePath: environment.unityEnginePath,
+      workspace: unityEnvironment.androidUnityFullPath,
+      unityEnginePath: unityEnvironment.unityEnginePath,
       platform: UnityPlatform.android,
     ).update();
     if (!success) {
@@ -98,13 +99,11 @@ flutter.minSdkVersion=20
       SetupAndroidFastlane(root: environment.workspace);
 
   @override
-  String get unityFullPath => environment.androidUnityFullPath;
+  String? get unityFullPath =>
+      environment.unityEnvironment?.androidUnityFullPath;
 
   @override
   String get unityFrameworkPath => 'android/unityLibrary';
-
-  @override
-  String get platformFileName => '.android_build_id.json';
 
   @override
   String get logHeader => '✅Android 新测试包已经发布!';

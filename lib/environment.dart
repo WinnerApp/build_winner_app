@@ -32,26 +32,21 @@ class Environment {
   /// 蒲公英上传的Key
   late String pgyerApiKey;
 
-  /// Unity所在Flutter项目的工程目录
-  late String unityWorkspace;
-
-  /// iOS Unity工程的相对路径
-  late String iosUnityPath;
-
-  /// Android Unity工程的相对路径
-  late String androidUnityPath;
-
-  /// Unity 引擎的路径
-  late String unityEnginePath;
-
   /// 打包的名称
   late String buildName;
 
+  /// 钉钉发送iOS日志的钉钉机器人地址
   late String dingdingIosHookUrl;
+
+  /// 钉钉发送Android日志的钉钉机器人地址
   late String dingdingAndroidHookUrl;
+
+  /// 当前打包的分支
   late String branch;
 
-  setup() {
+  UnityEnvironment? unityEnvironment;
+
+  setup(bool updateUnity) {
     workspace = env('WORKSPACE');
     iosHookUrl = env('IOS_HOOK_URL');
     androidHookUrl = env('ANDROID_HOOK_URL');
@@ -61,10 +56,19 @@ class Environment {
     appIdentifier = env('APP_IDENTIFIER');
     appId = env('APP_ID');
     pgyerApiKey = env('PGYER_API_KEY');
-    unityWorkspace = env('UNITY_WORKSPACE');
-    iosUnityPath = env('IOS_UNITY_PATH');
-    androidUnityPath = env('ANDROID_UNITY_PATH');
-    unityEnginePath = env('UNITY_ENGINE_PATH');
+    if (updateUnity) {
+      final unityWorkspace = env('UNITY_WORKSPACE');
+      final iosUnityPath = env('IOS_UNITY_PATH');
+      final androidUnityPath = env('ANDROID_UNITY_PATH');
+      final unityEnginePath = env('UNITY_ENGINE_PATH');
+      unityEnvironment = UnityEnvironment(
+        unityWorkspace: unityWorkspace,
+        iosUnityPath: iosUnityPath,
+        androidUnityPath: androidUnityPath,
+        unityEnginePath: unityEnginePath,
+      );
+    }
+
     buildName = env('BUILD_NAME');
     dingdingIosHookUrl = env('DINGDING_IOS_HOOK_URL');
     dingdingAndroidHookUrl = env('DINGDING_ANDROID_HOOK_URL');
@@ -78,6 +82,27 @@ class Environment {
     }
     return Platform.environment[name]!;
   }
+}
+
+class UnityEnvironment {
+  /// Unity所在Flutter项目的工程目录
+  final String unityWorkspace;
+
+  /// iOS Unity工程的相对路径
+  final String iosUnityPath;
+
+  /// Android Unity工程的相对路径
+  final String? androidUnityPath;
+
+  /// Unity 引擎的路径
+  final String unityEnginePath;
+
+  const UnityEnvironment({
+    required this.unityWorkspace,
+    required this.iosUnityPath,
+    required this.androidUnityPath,
+    required this.unityEnginePath,
+  });
 
   /// 安卓Unity工程的完整路径
   String get androidUnityFullPath => join(unityWorkspace, androidUnityPath);

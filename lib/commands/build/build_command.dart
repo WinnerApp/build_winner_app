@@ -31,23 +31,23 @@ class BuildCommand extends Command {
 abstract class BaseBuildCommand extends Command {
   BaseBuildCommand() {
     argParser.addFlag('skipUnityUpdate', help: '跳过Unity自动更新!');
+    argParser.addFlag('tag', help: '当前打包的Tag');
   }
 
+  /// 当前打包运行环境的参数
   Environment environment = Environment();
 
-  /// Unity工程的全路径
-  String get unityFullPath;
+  /// Unity工程的全路径 如果iOS则是iOSUnity的路径 如果Android则是AndroidUnity的路径
+  String? get unityFullPath;
 
   /// 需要复制到对应工程Unity路径
   String get unityFrameworkPath;
 
-  String get platformFileName;
-
+  /// 日志头
   String get logHeader;
 
+  /// 日志尾
   String get logFooter;
-
-  // String get unityFileName;
 
   @override
   FutureOr? run() async {
@@ -55,8 +55,13 @@ abstract class BaseBuildCommand extends Command {
     final skipUnityUpdate = JSON(argResults?['skipUnityUpdate']).boolValue;
     logger.log('skipUnityUpdate: $skipUnityUpdate', status: LogStatus.debug);
 
-    environment.setup();
+    final tag = JSON(argResults?['tag']).string;
+    logger.log('tag: $tag', status: LogStatus.debug);
 
+    /// 初始化环境变量 提示用户必须设置对应的环境变量
+    environment.setup(!skipUnityUpdate);
+
+    /// 初始化Fastlane 支持后面上传iPA或者APK
     await setupFastlane.setup();
 
     /// 获取上一次打包配置路径
@@ -73,15 +78,20 @@ abstract class BaseBuildCommand extends Command {
     /// 获取打包配置
     final buildConfig = await buildConfigManager.getBuildConfig();
 
+    /// 本地的Unity提交
     String? localUnityCommit;
+
+    /// 远程的Unity提交
     String? remoteUnityCommit;
-    if (!skipUnityUpdate) {
+
+    /// 如果不跳过Unity自动更新则获取对应的Uity提交
+    if (unityFullPath != null) {
       /// 获取Unity项目的本地提交
-      localUnityCommit = await getGitLastCommitHash(unityFullPath);
+      localUnityCommit = await getGitLastCommitHash(unityFullPath!);
       logger.log('本地Unity提交: $localUnityCommit');
 
       /// 获取网络上最新的Unity提交
-      remoteUnityCommit = await getGitLastRemoteCommitHash(unityFullPath);
+      remoteUnityCommit = await getGitLastRemoteCommitHash(unityFullPath!);
       logger.log('网络上最新的Unity提交: $remoteUnityCommit');
     }
 
@@ -92,14 +102,8 @@ abstract class BaseBuildCommand extends Command {
     final lastUnityBuildId = buildInfo.unity.cache;
 
     /// Unity是否需要更新 通过本地和远程的对比 可以防止打包失败了 但是依然需要重新导包
-    bool needUpdateUnity =
-        lastUnityBuildId != remoteUnityCommit && !skipUnityUpdate;
-
-    /// 原始的对应打包平台Unity的出包位置
-    final fromUnityFrameworkPath = join(
-      environment.unityWorkspace,
-      unityFrameworkPath,
-    );
+    bool needUpdateUnity = lastUnityBuildId != remoteUnityCommit &&
+        environment.unityEnvironment != null;
 
     /// 如果当前的分支和目标分支不是一个分支 则切换
     if (await getLocalBranchName(environment.workspace) != environment.branch) {
@@ -122,13 +126,13 @@ abstract class BaseBuildCommand extends Command {
     var log = '';
 
     /// 如果unity最后一次日志的ID和目前远程的不是一致 并且没有跳过Unity更新
-    if (buildInfo.unity.log != remoteUnityCommit && !skipUnityUpdate) {
+    if (buildInfo.unity.log != remoteUnityCommit && unityFullPath != null) {
       /// 将Unity更新到最新
-      await updateGitBranch(unityFullPath);
+      await updateGitBranch(unityFullPath!);
 
       /// 获取Unity更新日志
       final unityLog = await GetGitLog(
-        root: unityFullPath,
+        root: unityFullPath!,
         lastCommitId: remoteUnityCommit!,
         currentCommitId: buildInfo.unity.log,
       ).get();
@@ -167,6 +171,7 @@ $rootLog
 
     if (log.isNotEmpty) {
       log = '''
+[Tag]:${tag ?? ''}
 $logHeader
 -----------------------
 $log
@@ -179,24 +184,32 @@ $logFooter
 $log
 ''', status: LogStatus.warning);
     }
-    if (!needUpdateUnity && await Directory(fromUnityFrameworkPath).exists()) {
-      logger.log('$unityFullPath 不需要更新已经跳过!', status: LogStatus.success);
-    } else {
-      /// 导出Unity包
-      await updateUnity(unityFullPath);
-      buildInfo.unity.cache = remoteUnityCommit!;
 
-      /// 更新当前最后一次Unity缓存的ID
-      await buildConfigManager.setBuildConfig(buildConfig);
-    }
+    final unityEnvironment = environment.unityEnvironment;
+    if (unityEnvironment != null && unityFullPath != null) {
+      /// 原始的对应打包平台Unity的出包位置
+      final fromUnityFrameworkPath = join(
+        unityEnvironment.unityWorkspace,
+        unityFrameworkPath,
+      );
 
-    /// 复制最新的Unity包所到的位置
-    final toUnityFrameworkPath = join(
-      environment.workspace,
-      unityFrameworkPath,
-    );
+      /// 如果需要更新Unity 并且本地的Unity不存在
+      if (needUpdateUnity ||
+          !await Directory(fromUnityFrameworkPath).exists()) {
+        /// 导出Unity包
+        await updateUnity(unityEnvironment);
+        buildInfo.unity.cache = remoteUnityCommit!;
 
-    if (skipUnityUpdate || toUnityFrameworkPath == fromUnityFrameworkPath) {
+        /// 更新当前最后一次Unity缓存的ID
+        await buildConfigManager.setBuildConfig(buildConfig);
+      }
+
+      /// 复制最新的Unity包所到的位置
+      final toUnityFrameworkPath = join(
+        environment.workspace,
+        unityFrameworkPath,
+      );
+
       /// 将最新的Unity复制到打包的项目
       if (await Directory(toUnityFrameworkPath).exists()) {
         await Directory(toUnityFrameworkPath).delete(recursive: true);
@@ -249,7 +262,7 @@ $log
     exit(0);
   }
 
-  Future updateUnity(String unityPath);
+  Future updateUnity(UnityEnvironment unityEnvironment);
 
   Future build(String root);
 
