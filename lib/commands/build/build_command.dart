@@ -171,7 +171,8 @@ $rootLog
 
     if (log.isNotEmpty) {
       log = '''
-[Tag]:${tag ?? ''}
+[Tag]: ${tag ?? ''}
+[version]: ${environment.buildName}($buildNumber)
 $logHeader
 -----------------------
 $log
