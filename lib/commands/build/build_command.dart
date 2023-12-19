@@ -31,7 +31,7 @@ class BuildCommand extends Command {
 abstract class BaseBuildCommand extends Command {
   BaseBuildCommand() {
     argParser.addFlag('skipUnityUpdate', help: '跳过Unity自动更新!');
-    argParser.addFlag('tag', help: '当前打包的Tag');
+    argParser.addOption('tag', help: '当前打包的Tag');
   }
 
   /// 当前打包运行环境的参数
