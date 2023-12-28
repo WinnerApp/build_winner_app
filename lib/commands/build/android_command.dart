@@ -118,4 +118,13 @@ class AndroidCommand extends BaseBuildCommand {
   BuildInfo getBuildInfo(BuildConfig buildConfig) {
     return buildConfig.android;
   }
+
+  @override
+  BuildConfigManager getBuildConfigManager(
+      {required AppwriteEnvironment appwriteEnvironment}) {
+    return BuildConfigManager(
+      environment: appwriteEnvironment,
+      platform: 'android',
+    );
+  }
 }

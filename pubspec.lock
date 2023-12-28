@@ -89,6 +89,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.3"
+  dart_appwrite:
+    dependency: "direct main"
+    description:
+      name: dart_appwrite
+      sha256: da1b7752e7402e76a95824d1292dc337958994d228aca315d6d4562e8fe747f5
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "10.1.0"
   darty_json_safe:
     dependency: "direct main"
     description:
@@ -129,6 +137,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.2"
+  http:
+    dependency: transitive
+    description:
+      name: http
+      sha256: "4c3f04bfb64d3efd508d06b41b825542f08122d30bda4933fb95c069d22a4fa3"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0"
   http_multi_server:
     dependency: transitive
     description:

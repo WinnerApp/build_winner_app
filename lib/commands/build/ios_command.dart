@@ -96,4 +96,13 @@ class IosCommand extends BaseBuildCommand {
   BuildInfo getBuildInfo(BuildConfig buildConfig) {
     return buildConfig.ios;
   }
+
+  @override
+  BuildConfigManager getBuildConfigManager(
+      {required AppwriteEnvironment appwriteEnvironment}) {
+    return BuildConfigManager(
+      environment: appwriteEnvironment,
+      platform: 'ios',
+    );
+  }
 }

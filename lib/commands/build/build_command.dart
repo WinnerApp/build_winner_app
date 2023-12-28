@@ -64,19 +64,9 @@ abstract class BaseBuildCommand extends Command {
     /// 初始化Fastlane 支持后面上传iPA或者APK
     await setupFastlane.setup();
 
-    /// 获取上一次打包配置路径
-    final buildConfigFilePath = File(join(
-      environment.workspace,
-      '.build_info.json',
-    ));
-
     /// 初始化打包配置管理器
-    final buildConfigManager = BuildConfigManager(
-      filePath: buildConfigFilePath.path,
-    );
-
-    /// 获取打包配置
-    final buildConfig = await buildConfigManager.getBuildConfig();
+    final buildConfigManager = getBuildConfigManager(
+        appwriteEnvironment: environment.appwriteEnvironment);
 
     /// 本地的Unity提交
     String? localUnityCommit;
@@ -96,7 +86,11 @@ abstract class BaseBuildCommand extends Command {
     }
 
     /// 获取当前打包平台的上一次打包配置
-    final buildInfo = getBuildInfo(buildConfig);
+    final buildInfo = await buildConfigManager.getBuildConfig();
+    if (buildInfo == null) {
+      logger.log('打包配置不存在!', status: LogStatus.error);
+      exit(2);
+    }
 
     /// 获取上一次Unity打包的ID
     final lastUnityBuildId = buildInfo.unity.cache;
@@ -202,7 +196,11 @@ $log
         buildInfo.unity.cache = remoteUnityCommit!;
 
         /// 更新当前最后一次Unity缓存的ID
-        await buildConfigManager.setBuildConfig(buildConfig);
+        await buildConfigManager.setBuildConfig(
+          buildInfo: buildInfo,
+          buildName: environment.buildName,
+          buildTime: buildNumber,
+        );
       }
 
       /// 复制最新的Unity包所到的位置
@@ -257,7 +255,11 @@ $log
     if (!skipUnityUpdate) {
       buildInfo.unity.log = remoteUnityCommit!;
     }
-    await buildConfigManager.setBuildConfig(buildConfig);
+    await buildConfigManager.setBuildConfig(
+      buildInfo: buildInfo,
+      buildName: environment.buildName,
+      buildTime: buildNumber,
+    );
 
     logger.log('✅打包完成', status: LogStatus.success);
     exit(0);
@@ -302,4 +304,7 @@ $log
   String get dingdingHookUrl;
 
   BuildInfo getBuildInfo(BuildConfig buildConfig);
+
+  BuildConfigManager getBuildConfigManager(
+      {required AppwriteEnvironment appwriteEnvironment});
 }

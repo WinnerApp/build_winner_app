@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:build_winner_app/appwrite_server.dart';
 import 'package:build_winner_app/common/define.dart';
+import 'package:build_winner_app/environment.dart';
 import 'package:color_logger/color_logger.dart';
+import 'package:dart_appwrite/dart_appwrite.dart';
 import 'package:darty_json_safe/darty_json_safe.dart';
 
 class BuildConfig {
@@ -69,24 +72,73 @@ class BuildUnityConfig {
 }
 
 class BuildConfigManager {
-  final String filePath;
+  final AppwriteEnvironment environment;
+  final String platform;
 
-  const BuildConfigManager({required this.filePath});
+  const BuildConfigManager({required this.environment, required this.platform});
 
-  Future<BuildConfig> getBuildConfig() async {
-    if (!await File(filePath).exists()) {
-      logger.log('$filePath路径不存在!', status: LogStatus.error);
-      exit(2);
+  Future<BuildInfo?> getBuildConfig() async {
+    final appwriteServer = AppwriteServer(environment);
+
+    final databases = appwriteServer.databases;
+    final documents = await databases.listDocuments(
+      databaseId: environment.databaseId,
+      collectionId: environment.collectionId,
+      queries: [
+        Query.equal('platform', platform),
+        Query.orderDesc('build_time'),
+      ],
+    );
+
+    if (documents.documents.isEmpty) {
+      return null;
     }
 
-    final buildConfigText = await File(filePath).readAsString();
-    final buildConfigJson = JSON(buildConfigText);
-    final buildConfig = BuildConfig.fromJson(buildConfigJson.mapValue
-        .map((key, value) => MapEntry(key.toString(), value)));
-    return buildConfig;
+    final document = documents.documents.first;
+    final buildInfo = BuildInfo.fromJson({
+      'flutter': JSON(document.data)['flutter_conmit'].stringValue,
+      'unity': BuildUnityConfig.fromJson({
+        'cache': JSON(document.data)['unity_cache_commit'].stringValue,
+        'log': JSON(document.data)['unity_log_commit'].stringValue,
+      }).toJson(),
+    });
+    return buildInfo;
   }
 
-  Future<void> setBuildConfig(BuildConfig buildConfig) async {
-    await File(filePath).writeAsString(json.encode(buildConfig.toJson()));
+  Future<bool> setBuildConfig({
+    required BuildInfo buildInfo,
+    required String buildName,
+    required int buildTime,
+  }) async {
+    final appwriteServer = AppwriteServer(environment);
+    final databases = appwriteServer.databases;
+    if (buildInfo.flutter.isEmpty ||
+        buildInfo.unity.cache.isEmpty ||
+        buildInfo.unity.log.isEmpty) {
+      logger.log('buildInfo is empty', status: LogStatus.error);
+      return false;
+    }
+
+    try {
+      await databases.createDocument(
+        databaseId: environment.databaseId,
+        collectionId: environment.collectionId,
+        documentId: ID.unique(),
+        data: {
+          'platform': platform,
+          'build_name': buildName,
+          'build_time': DateTime.fromMillisecondsSinceEpoch(buildTime * 1000)
+              .toIso8601String(),
+          'build_number': buildTime,
+          'flutter_conmit': buildInfo.flutter,
+          'unity_cache_commit': buildInfo.unity.cache,
+          'unity_log_commit': buildInfo.unity.log,
+        },
+      );
+      return true;
+    } catch (e) {
+      logger.log(e.toString(), status: LogStatus.error);
+      return false;
+    }
   }
 }

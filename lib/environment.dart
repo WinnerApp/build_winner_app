@@ -46,6 +46,8 @@ class Environment {
 
   UnityEnvironment? unityEnvironment;
 
+  late AppwriteEnvironment appwriteEnvironment;
+
   setup(bool updateUnity) {
     workspace = env('WORKSPACE');
     iosHookUrl = env('IOS_HOOK_URL');
@@ -73,6 +75,14 @@ class Environment {
     dingdingIosHookUrl = env('DINGDING_IOS_HOOK_URL');
     dingdingAndroidHookUrl = env('DINGDING_ANDROID_HOOK_URL');
     branch = env('BRANCH').replaceFirst('origin/', '');
+
+    appwriteEnvironment = AppwriteEnvironment(
+      endPoint: env('APPWRITE_ENDPOINT'),
+      projectId: env('APPWRITE_PROJECT_ID'),
+      apiKey: env('APPWRITE_API_KEY'),
+      databaseId: env('APPWRITE_DATABASE_ID'),
+      collectionId: env('APPWRITE_COLLECTION_ID'),
+    );
   }
 
   String env(String name) {
@@ -109,4 +119,19 @@ class UnityEnvironment {
 
   /// iOS Unity工程的完整路径
   String get iosUnityFullPath => join(unityWorkspace, iosUnityPath);
+}
+
+class AppwriteEnvironment {
+  final String endPoint;
+  final String projectId;
+  final String apiKey;
+  final String databaseId;
+  final String collectionId;
+  AppwriteEnvironment({
+    required this.endPoint,
+    required this.projectId,
+    required this.apiKey,
+    required this.databaseId,
+    required this.collectionId,
+  });
 }
