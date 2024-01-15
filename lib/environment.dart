@@ -48,6 +48,8 @@ class Environment {
 
   late AppwriteEnvironment appwriteEnvironment;
 
+  late int buildNumber;
+
   setup(bool updateUnity) {
     workspace = env('WORKSPACE');
     iosHookUrl = env('IOS_HOOK_URL');
@@ -83,6 +85,8 @@ class Environment {
       databaseId: env('APPWRITE_DATABASE_ID'),
       collectionId: env('APPWRITE_COLLECTION_ID'),
     );
+
+    buildNumber = DateTime.now().millisecondsSinceEpoch ~/ 1000;
   }
 
   String env(String name) {

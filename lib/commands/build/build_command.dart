@@ -166,7 +166,7 @@ $rootLog
     if (log.isNotEmpty) {
       log = '''
 [Tag]: ${tag ?? ''}
-[version]: ${environment.buildName}($buildNumber)
+[version]: ${environment.buildName}(${environment.buildNumber})
 $logHeader
 -----------------------
 $log
@@ -199,7 +199,7 @@ $log
         await buildConfigManager.setBuildConfig(
           buildInfo: buildInfo,
           buildName: environment.buildName,
-          buildTime: buildNumber,
+          buildTime: environment.buildNumber,
         );
       }
 
@@ -258,7 +258,7 @@ $log
     await buildConfigManager.setBuildConfig(
       buildInfo: buildInfo,
       buildName: environment.buildName,
-      buildTime: buildNumber,
+      buildTime: environment.buildNumber,
     );
 
     logger.log('✅打包完成', status: LogStatus.success);
@@ -299,7 +299,7 @@ $log
 
   SetupFastlane get setupFastlane;
 
-  int get buildNumber => DateTime.now().millisecondsSinceEpoch ~/ 1000;
+  // int get buildNumber => DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
   String get dingdingHookUrl;
 
