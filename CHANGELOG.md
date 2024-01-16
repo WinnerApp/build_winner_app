@@ -1,3 +1,8 @@
+## 2.0.2
+
+- [Fix] 修复打包时候使用Build number临时创建存在不同位置
+- [Fix] 修复iOS打包之前不支持build name问题
+
 ## 2.0.1
 
 - [Fix] 修复了上传包的Build number和日志的不同 

@@ -135,7 +135,12 @@ void main() {
     if (await File(ipaPath).exists()) {
       await File(ipaPath).delete();
     }
-    final buildApp = BuildApp(platform: BuildPlatform.ios, root: root);
+    final buildApp = BuildApp(
+      platform: BuildPlatform.ios,
+      root: root,
+      buildName: '1.0.0',
+      buildNumber: 1,
+    );
     await buildApp.build();
     expect(await File(ipaPath).exists(), true);
   }, timeout: Timeout.none);
@@ -148,7 +153,12 @@ void main() {
     if (await File(apkPath).exists()) {
       await File(apkPath).delete();
     }
-    final buildApp = BuildApp(platform: BuildPlatform.android, root: root);
+    final buildApp = BuildApp(
+      platform: BuildPlatform.android,
+      root: root,
+      buildName: '1.0.0',
+      buildNumber: 1,
+    );
     await buildApp.build();
     expect(await File(apkPath).exists(), true);
   }, timeout: Timeout.none);

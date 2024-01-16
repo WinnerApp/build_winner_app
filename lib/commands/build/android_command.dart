@@ -69,6 +69,7 @@ class AndroidCommand extends BaseBuildCommand {
       platform: BuildPlatform.android,
       root: root,
       buildName: environment.buildName,
+      buildNumber: environment.buildNumber,
     ).build();
   }
 

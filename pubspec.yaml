@@ -1,6 +1,6 @@
 name: build_winner_app
 description: 自动化打包稳健医疗App工具.
-version: 2.0.1
+version: 2.0.2
 # repository: https://github.com/my_org/my_repo
 
 environment:

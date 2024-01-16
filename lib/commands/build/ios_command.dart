@@ -48,7 +48,12 @@ class IosCommand extends BaseBuildCommand {
 
   @override
   Future build(String root) async {
-    await BuildApp(platform: BuildPlatform.ios, root: root).build();
+    await BuildApp(
+      platform: BuildPlatform.ios,
+      root: root,
+      buildName: environment.buildName,
+      buildNumber: environment.buildNumber,
+    ).build();
   }
 
   @override

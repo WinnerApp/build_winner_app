@@ -4,21 +4,19 @@ import 'package:process_run/process_run.dart';
 
 class BuildApp {
   final BuildPlatform platform;
-  final String? buildName;
+  final String buildName;
+  final int buildNumber;
   final String root;
 
   BuildApp({
     required this.platform,
     required this.root,
-    this.buildName,
+    required this.buildName,
+    required this.buildNumber,
   });
   Future<bool> build() async {
-    var script = 'flutter build ${platform.name}';
-    if (buildName != null) {
-      script += ' --build-name $buildName';
-    }
-    final buildNumber = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    script += ' --build-number $buildNumber';
+    var script =
+        'flutter build ${platform.name} --build-name $buildName --build-number $buildNumber';
     logger.log('👉开始进行打包......');
     final result = await runCommand(root, script).then((value) => value.first);
     if (result.exitCode != 0) {
