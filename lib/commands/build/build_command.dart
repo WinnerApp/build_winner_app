@@ -32,6 +32,11 @@ abstract class BaseBuildCommand extends Command {
   BaseBuildCommand() {
     argParser.addFlag('skipUnityUpdate', help: '跳过Unity自动更新!');
     argParser.addOption('tag', help: '当前打包的Tag');
+    argParser.addFlag(
+      'supportLdClassic',
+      help: '是否支持 ld_classic',
+      defaultsTo: true,
+    );
   }
 
   /// 当前打包运行环境的参数
@@ -60,6 +65,8 @@ abstract class BaseBuildCommand extends Command {
 
     /// 初始化环境变量 提示用户必须设置对应的环境变量
     environment.setup(!skipUnityUpdate);
+
+    await init();
 
     /// 初始化Fastlane 支持后面上传iPA或者APK
     await setupFastlane.setup();
@@ -307,4 +314,6 @@ $log
 
   BuildConfigManager getBuildConfigManager(
       {required AppwriteEnvironment appwriteEnvironment});
+
+  init() async {}
 }

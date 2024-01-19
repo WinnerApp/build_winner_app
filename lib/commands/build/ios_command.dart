@@ -10,6 +10,7 @@ import 'package:build_winner_app/fix_ios_unity_cache.dart';
 import 'package:build_winner_app/setup_fastlane.dart';
 import 'package:build_winner_app/update_unity.dart';
 import 'package:color_logger/color_logger.dart';
+import 'package:darty_json_safe/darty_json_safe.dart';
 import 'package:path/path.dart';
 import 'package:yaml/yaml.dart';
 
@@ -109,5 +110,28 @@ class IosCommand extends BaseBuildCommand {
       environment: appwriteEnvironment,
       platform: 'ios',
     );
+  }
+
+  @override
+  init() async {
+    final supportLdClassic = JSON(argResults?['supportLdClassic']).boolValue;
+
+    /// 是否要去掉ld_classic
+    if (!supportLdClassic) {
+      final projectPath = join(
+          environment.workspace, 'ios', 'Runner.xcodeproj', 'project.pbxproj');
+      final contents = await File(projectPath).readAsLines();
+      if (!contents.any((value) => value.contains('ld_classic'))) {
+        logger.log('已经去掉ld_classic', status: LogStatus.success);
+        return;
+      }
+      contents.removeWhere((element) => element.contains('ld_classic'));
+      final newContent = contents.join('\n');
+      if (newContent.contains('-ld_classic')) {
+        logger.log('ld_classic依然存在', status: LogStatus.error);
+        return;
+      }
+      await File(projectPath).writeAsString(newContent);
+    }
   }
 }

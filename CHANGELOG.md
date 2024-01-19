@@ -1,3 +1,7 @@
+## 2.1.0
+
+- [Add] 新增支持`--[no-]supportLdClassic`是否可以选择关闭对于Xcode15 -ld-classic的支持 不然低于Xcode15无法打包的问题
+
 ## 2.0.2
 
 - [Fix] 修复打包时候使用Build number临时创建存在不同位置
