@@ -66,8 +66,6 @@ abstract class BaseBuildCommand extends Command {
     /// 初始化环境变量 提示用户必须设置对应的环境变量
     environment.setup(!skipUnityUpdate);
 
-    await init();
-
     /// 初始化Fastlane 支持后面上传iPA或者APK
     await setupFastlane.setup();
 

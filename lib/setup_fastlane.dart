@@ -71,11 +71,14 @@ default_platform(:android)
 
 lane :deploy do |options|
   apk = options[:apk]
-  pgyer(
-    api_key: ENV["PGYER_API_KEY"],
-    apk: apk,
+  zealot(
+    endpoint: ENV['ZEALOT_ENDPOINT'],
+    token: ENV['ZEALOT_TOKEN'],
+    channel_key: ENV['ZEALOT_CHANNEL_KEY'],
+    file: apk,
   )
 end
+
 ''';
 
   @override

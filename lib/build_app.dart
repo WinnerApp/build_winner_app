@@ -16,7 +16,7 @@ class BuildApp {
   });
   Future<bool> build() async {
     var script =
-        'flutter build ${platform.name} --build-name $buildName --build-number $buildNumber';
+        'flutter build ${platform.name} --build-name=$buildName --build-number=$buildNumber';
     logger.log('👉开始进行打包......');
     final result = await runCommand(root, script).then((value) => value.first);
     if (result.exitCode != 0) {

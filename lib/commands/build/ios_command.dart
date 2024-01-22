@@ -49,6 +49,33 @@ class IosCommand extends BaseBuildCommand {
 
   @override
   Future build(String root) async {
+    final supportLdClassic = JSON(argResults?['supportLdClassic']).boolValue;
+    logger.log('supportLdClassic: $supportLdClassic');
+
+    /// 是否要去掉ld_classic
+    if (!supportLdClassic) {
+      final projectPath = join(
+          environment.workspace, 'ios', 'Runner.xcodeproj', 'project.pbxproj');
+      var contents = await File(projectPath).readAsString();
+      contents = contents.replaceAll('''
+				OTHER_LDFLAGS = (
+					"\$(inherited)",
+					"-ld_classic",
+				);
+''', '''
+				OTHER_LDFLAGS = (
+					"\$(inherited)",
+				);
+''');
+      if (contents.contains('ld_classic')) {
+        logger.log('去掉ld_classic失败!', status: LogStatus.error);
+        exit(2);
+      }
+      await File(projectPath).writeAsString(contents);
+
+      logger.log('已经去掉ld_classic', status: LogStatus.success);
+    }
+
     await BuildApp(
       platform: BuildPlatform.ios,
       root: root,
@@ -113,25 +140,5 @@ class IosCommand extends BaseBuildCommand {
   }
 
   @override
-  init() async {
-    final supportLdClassic = JSON(argResults?['supportLdClassic']).boolValue;
-
-    /// 是否要去掉ld_classic
-    if (!supportLdClassic) {
-      final projectPath = join(
-          environment.workspace, 'ios', 'Runner.xcodeproj', 'project.pbxproj');
-      final contents = await File(projectPath).readAsLines();
-      if (!contents.any((value) => value.contains('ld_classic'))) {
-        logger.log('已经去掉ld_classic', status: LogStatus.success);
-        return;
-      }
-      contents.removeWhere((element) => element.contains('ld_classic'));
-      final newContent = contents.join('\n');
-      if (newContent.contains('-ld_classic')) {
-        logger.log('ld_classic依然存在', status: LogStatus.error);
-        return;
-      }
-      await File(projectPath).writeAsString(newContent);
-    }
-  }
+  init() async {}
 }
