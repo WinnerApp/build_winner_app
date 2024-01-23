@@ -1,3 +1,7 @@
+# 2.2.1
+
+- [Fix] 修复了Unity Android 新版Vulkan导致打包出问题
+
 ## 2.1.0
 
 - [Add] 新增支持`--[no-]supportLdClassic`是否可以选择关闭对于Xcode15 -ld-classic的支持 不然低于Xcode15无法打包的问题

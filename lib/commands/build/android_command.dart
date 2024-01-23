@@ -20,6 +20,23 @@ class AndroidCommand extends BaseBuildCommand {
 
   @override
   Future updateUnity(UnityEnvironment unityEnvironment) async {
+    // 导出包之前修复Graphics Api的问题
+    // ../ProjectSettings/ProjectSettings.asset
+    final projectSettingPath = join(unityEnvironment.androidUnityFullPath,
+        'ProjectSettings', 'ProjectSettings.asset');
+    if (!await File(projectSettingPath).exists()) {
+      logger.log('$projectSettingPath路径不存在!', status: LogStatus.error);
+      exit(2);
+    }
+
+    var contents = await File(projectSettingPath).readAsString();
+    final lines = contents.split('\n');
+    final index = lines.indexWhere((element) => element.contains('m_APIs'));
+    if (index != -1) {
+      // m_APIs: 0b000000
+      lines[index] = '    m_APIs: 0b000000';
+    }
+    await File(projectSettingPath).writeAsString(lines.join('\n'));
     final success = await UpdateUnity(
       workspace: unityEnvironment.androidUnityFullPath,
       unityEnginePath: unityEnvironment.unityEnginePath,
