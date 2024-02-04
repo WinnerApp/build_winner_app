@@ -94,7 +94,13 @@ class BuildConfigManager {
       return null;
     }
 
-    final document = documents.documents.first;
+    /// 按照最新创建时间排序
+    documents.documents.sort((a, b) {
+      return DateTime.parse(a.$createdAt)
+          .compareTo(DateTime.parse(b.$createdAt));
+    });
+
+    final document = documents.documents.last;
     final buildInfo = BuildInfo.fromJson({
       'flutter': JSON(document.data)['flutter_conmit'].stringValue,
       'unity': BuildUnityConfig.fromJson({
