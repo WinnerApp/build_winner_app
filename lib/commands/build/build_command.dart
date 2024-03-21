@@ -41,7 +41,6 @@ abstract class BaseBuildCommand extends Command {
     argParser.addOption(
       'sentry_properties_path',
       help: 'sentry.properties 的配置文件',
-      abbr: 'sp',
     );
   }
 
