@@ -9,6 +9,7 @@ import 'package:build_winner_app/common/define.dart';
 import 'package:build_winner_app/environment.dart';
 import 'package:build_winner_app/get_git_log.dart';
 import 'package:build_winner_app/setup_fastlane.dart';
+import 'package:build_winner_app/upload_sentry_%20symbols.dart';
 import 'package:color_logger/color_logger.dart';
 import 'package:darty_json_safe/darty_json_safe.dart';
 import 'package:path/path.dart';
@@ -37,6 +38,11 @@ abstract class BaseBuildCommand extends Command {
       help: '是否支持 ld_classic',
       defaultsTo: true,
     );
+    argParser.addOption(
+      'sentry_properties_path',
+      help: 'sentry.properties 的配置文件',
+      abbr: 'sp',
+    );
   }
 
   /// 当前打包运行环境的参数
@@ -62,6 +68,13 @@ abstract class BaseBuildCommand extends Command {
 
     final tag = JSON(argResults?['tag']).string;
     logger.log('tag: $tag', status: LogStatus.debug);
+
+    final sentryPropertiesPath =
+        JSON(argResults?['sentry_properties_path']).string;
+    logger.log(
+      'sentryPropertiesPath: $sentryPropertiesPath',
+      status: LogStatus.debug,
+    );
 
     /// 初始化环境变量 提示用户必须设置对应的环境变量
     environment.setup(!skipUnityUpdate);
@@ -265,6 +278,11 @@ $log
       buildName: environment.buildName,
       buildTime: environment.buildNumber,
     );
+
+    if (sentryPropertiesPath != null) {
+      await UploadSentrySymbols(environment.workspace, sentryPropertiesPath)
+          .run();
+    }
 
     logger.log('✅打包完成', status: LogStatus.success);
     exit(0);
