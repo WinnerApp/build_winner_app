@@ -279,8 +279,12 @@ $log
     );
 
     if (sentryPropertiesPath != null) {
-      await UploadSentrySymbols(environment.workspace, sentryPropertiesPath)
-          .run();
+      await UploadSentrySymbols(
+        environment.workspace,
+        sentryPropertiesPath,
+        environment.buildName,
+        environment.buildNumber.toString(),
+      ).run();
     }
 
     logger.log('✅打包完成', status: LogStatus.success);
