@@ -1,3 +1,4 @@
+import 'package:build_winner_app/commands/build/build_command.dart';
 import 'package:build_winner_app/common/define.dart';
 import 'package:color_logger/color_logger.dart';
 import 'package:process_run/process_run.dart';
@@ -17,6 +18,9 @@ class BuildApp {
   Future<bool> build() async {
     var script =
         'flutter build ${platform.name} --build-name=$buildName --build-number=$buildNumber';
+    for (var args in dartDefineArgs) {
+      script = '$script $args';
+    }
     logger.log('👉开始进行打包......');
     final result = await runCommand(root, script).then((value) => value.first);
     if (result.exitCode != 0) {

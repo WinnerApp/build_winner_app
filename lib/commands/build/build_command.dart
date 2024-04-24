@@ -14,6 +14,8 @@ import 'package:color_logger/color_logger.dart';
 import 'package:darty_json_safe/darty_json_safe.dart';
 import 'package:path/path.dart';
 
+List<String> dartDefineArgs = [];
+
 class BuildCommand extends Command {
   BuildCommand() {
     addSubcommand(IosCommand());

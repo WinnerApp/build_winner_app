@@ -1,3 +1,7 @@
+# 2.5.0
+
+- [Add] 增加对于--dart-define=的支持
+
 # 2.4.0
 
 - [Add] 支持配置上传Sentry Symbols
