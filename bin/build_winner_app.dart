@@ -2,9 +2,11 @@ import 'package:args/command_runner.dart';
 import 'package:build_winner_app/commands/build/build_command.dart';
 
 void main(List<String> arguments) async {
+  var arguments0 = [...arguments];
   for (var arg in arguments) {
     if (arg.startsWith('--dart-define=')) {
       dartDefineArgs.add(arg);
+      arguments0.remove(arg);
     }
   }
 
@@ -13,5 +15,5 @@ void main(List<String> arguments) async {
     '打包并上传到Testflight/到蒲公英 企业微信通知',
   )..addCommand(BuildCommand());
 
-  await runner.run(arguments);
+  await runner.run(arguments0);
 }
