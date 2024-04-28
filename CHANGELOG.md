@@ -1,3 +1,11 @@
+# 2.5.0
+
+- [Add] 增加对于--dart-define=的支持
+
+# 2.4.0
+
+- [Add] 支持配置上传Sentry Symbols
+
 # 2.3.0
 
 - [Add] 新增iOS支持自动分发到外部测试组
