@@ -90,8 +90,8 @@ class BuildConfigManager {
       collectionId: environment.collectionId,
       queries: [
         Query.equal('platform', platform),
-        Query.orderDesc('build_time'),
         Query.equal('branch', branch),
+        Query.orderDesc('build_time'),
       ],
     );
 

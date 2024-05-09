@@ -101,7 +101,7 @@ class AndroidCommand extends BaseBuildCommand {
       exit(2);
     }
     final result = await runCommand(join(root, 'android'),
-            'fastlane deploy apk:"$apkPath" branch:${environment.branch} log:$log')
+            'fastlane deploy apk:"$apkPath" branch:"${environment.branch}" log:"$log"')
         .then((value) => value.first);
     if (result.exitCode != 0) {
       logger.log('上传失败!', status: LogStatus.error);
