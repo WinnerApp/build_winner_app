@@ -95,7 +95,7 @@ class IosCommand extends BaseBuildCommand {
       exit(2);
     }
     final result = await runCommand(join(root, 'ios'),
-            'fastlane upload_testflight ipa:"$ipaPath" branch:"${environment.branch}" log:"$log"')
+            'fastlane upload_testflight ipa:$ipaPath branch:${environment.branch} log:\\"$log\\"')
         .then((value) => value.first);
     if (result.exitCode != 0) {
       logger.log('上传失败!', status: LogStatus.error);
