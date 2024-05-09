@@ -61,6 +61,10 @@ abstract class BaseBuildCommand extends Command {
   /// 日志尾
   String get logFooter;
 
+  late String _log;
+
+  String get log => _log;
+
   @override
   FutureOr? run() async {
     /// 是否跳过Unity自动更新
@@ -184,6 +188,7 @@ $rootLog
 
     if (log.isNotEmpty) {
       log = '''
+[Branch]: ${environment.branch}
 [Tag]: ${tag ?? ''}
 [version]: ${environment.buildName}(${environment.buildNumber})
 $logHeader
@@ -198,6 +203,8 @@ $logFooter
 $log
 ''', status: LogStatus.warning);
     }
+
+    _log = log;
 
     final unityEnvironment = environment.unityEnvironment;
     if (unityEnvironment != null && unityFullPath != null) {

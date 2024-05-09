@@ -100,8 +100,8 @@ class AndroidCommand extends BaseBuildCommand {
       logger.log('$apkPath路径不存在!', status: LogStatus.error);
       exit(2);
     }
-    final result = await runCommand(
-            join(root, 'android'), 'fastlane deploy apk:"$apkPath"')
+    final result = await runCommand(join(root, 'android'),
+            'fastlane deploy apk:"$apkPath" branch:${environment.branch} log:$log')
         .then((value) => value.first);
     if (result.exitCode != 0) {
       logger.log('上传失败!', status: LogStatus.error);
