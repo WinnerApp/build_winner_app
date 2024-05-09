@@ -64,8 +64,10 @@ void main() async {
   test(
     'test get new config',
     () async {
-      final buildConfigManager =
-          BuildConfigManager(environment: appwriteEnvironment, platform: 'ios');
+      final buildConfigManager = BuildConfigManager(
+          environment: appwriteEnvironment,
+          platform: 'ios',
+          branch: 'origin/dev_mobshare');
 
       final result = await buildConfigManager.setBuildConfig(
         buildInfo: BuildInfo.fromJson({'flutter': '1'}),

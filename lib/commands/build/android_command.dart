@@ -143,6 +143,7 @@ class AndroidCommand extends BaseBuildCommand {
     return BuildConfigManager(
       environment: appwriteEnvironment,
       platform: 'android',
+      branch: environment.branch,
     );
   }
 }

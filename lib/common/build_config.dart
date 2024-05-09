@@ -74,8 +74,12 @@ class BuildUnityConfig {
 class BuildConfigManager {
   final AppwriteEnvironment environment;
   final String platform;
+  final String branch;
 
-  const BuildConfigManager({required this.environment, required this.platform});
+  const BuildConfigManager(
+      {required this.environment,
+      required this.platform,
+      required this.branch});
 
   Future<BuildInfo?> getBuildConfig() async {
     final appwriteServer = AppwriteServer(environment);
@@ -87,6 +91,7 @@ class BuildConfigManager {
       queries: [
         Query.equal('platform', platform),
         Query.orderDesc('build_time'),
+        Query.equal('branch', branch),
       ],
     );
 
@@ -139,6 +144,7 @@ class BuildConfigManager {
           'flutter_conmit': buildInfo.flutter,
           'unity_cache_commit': buildInfo.unity.cache,
           'unity_log_commit': buildInfo.unity.log,
+          'branch': branch,
         },
       );
       return true;

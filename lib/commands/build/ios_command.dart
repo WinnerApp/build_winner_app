@@ -136,6 +136,7 @@ class IosCommand extends BaseBuildCommand {
     return BuildConfigManager(
       environment: appwriteEnvironment,
       platform: 'ios',
+      branch: environment.branch,
     );
   }
 
