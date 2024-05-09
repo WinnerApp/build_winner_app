@@ -61,7 +61,7 @@ abstract class BaseBuildCommand extends Command {
   /// 日志尾
   String get logFooter;
 
-  late String _log;
+  String _log = '';
 
   String get log => _log;
 
@@ -198,13 +198,14 @@ $log
 $logFooter
 ''';
 
+      _log =
+          '[Branch]: ${environment.branch}\n[Tag]: ${tag ?? ''}\n[version]: ${environment.buildName}(${environment.buildNumber})\n$logHeader\n-----------------------\n$log\n----------';
+
       logger.log('''
 更新日志:
 $log
 ''', status: LogStatus.warning);
     }
-
-    _log = log;
 
     final unityEnvironment = environment.unityEnvironment;
     if (unityEnvironment != null && unityFullPath != null) {
