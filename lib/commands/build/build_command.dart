@@ -198,8 +198,7 @@ $log
 $logFooter
 ''';
 
-      _log =
-          '[Branch]: ${environment.branch}\n[Tag]: ${tag ?? ''}\n[version]: ${environment.buildName}(${environment.buildNumber})\n$logHeader\n-----------------------\n$log\n----------';
+      _log = '[Branch]: ${environment.branch} 新版本发布了，请下载体验!';
 
       logger.log('''
 更新日志:
