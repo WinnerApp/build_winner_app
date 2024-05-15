@@ -9,7 +9,7 @@ import 'package:build_winner_app/common/define.dart';
 import 'package:build_winner_app/environment.dart';
 import 'package:build_winner_app/get_git_log.dart';
 import 'package:build_winner_app/setup_fastlane.dart';
-import 'package:build_winner_app/upload_sentry_%20symbols.dart';
+import 'package:build_winner_app/upload_sentry_symbols.dart';
 import 'package:color_logger/color_logger.dart';
 import 'package:darty_json_safe/darty_json_safe.dart';
 import 'package:path/path.dart';
