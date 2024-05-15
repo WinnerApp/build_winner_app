@@ -7,7 +7,7 @@ import 'package:process_run/process_run.dart';
 class GetGitLog {
   final String root;
   final String lastCommitId;
-  final String currentCommitId;
+  final String? currentCommitId;
 
   GetGitLog({
     required this.root,
@@ -22,7 +22,7 @@ class GetGitLog {
       exit(2);
     }
     ProcessResult result;
-    if (currentCommitId.isEmpty) {
+    if (currentCommitId == null) {
       result = await runCommand(root, 'git log -1').then(
         (value) => value.first,
       );

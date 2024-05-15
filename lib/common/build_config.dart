@@ -117,19 +117,12 @@ class BuildConfigManager {
   }
 
   Future<bool> setBuildConfig({
-    required BuildInfo buildInfo,
+    required BuildInfo? buildInfo,
     required String buildName,
     required int buildTime,
   }) async {
     final appwriteServer = AppwriteServer(environment);
     final databases = appwriteServer.databases;
-    if (buildInfo.flutter.isEmpty ||
-        buildInfo.unity.cache.isEmpty ||
-        buildInfo.unity.log.isEmpty) {
-      logger.log('buildInfo is empty', status: LogStatus.error);
-      return false;
-    }
-
     try {
       await databases.createDocument(
         databaseId: environment.databaseId,
@@ -141,9 +134,9 @@ class BuildConfigManager {
           'build_time': DateTime.fromMillisecondsSinceEpoch(buildTime * 1000)
               .toIso8601String(),
           'build_number': buildTime,
-          'flutter_conmit': buildInfo.flutter,
-          'unity_cache_commit': buildInfo.unity.cache,
-          'unity_log_commit': buildInfo.unity.log,
+          'flutter_conmit': JSON(buildInfo?.flutter).stringValue,
+          'unity_cache_commit': JSON(buildInfo?.unity.cache).stringValue,
+          'unity_log_commit': JSON(buildInfo?.unity.log).stringValue,
           'branch': branch,
         },
       );
