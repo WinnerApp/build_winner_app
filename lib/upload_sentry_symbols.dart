@@ -1,4 +1,3 @@
-// ignore: file_names
 import 'dart:io';
 
 import 'package:build_winner_app/common/define.dart';
