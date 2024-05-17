@@ -1,6 +1,6 @@
 name: build_winner_app
 description: 自动化打包稳健医疗App工具.
-version: 2.3.1
+version: 2.4.0
 repository: https://github.com/WinnerApp/build_winner_app
 
 environment:
@@ -10,13 +10,13 @@ environment:
 dependencies:
   path: ^1.8.0
   args: ^2.4.2
-  process_run: ^0.13.3
+  process_run: ^0.12.5+3
   color_logger: ^1.0.2
   dio: ^5.4.0
   yaml: ^3.1.2
   darty_json_safe: ^1.0.3
   dart_appwrite: ^10.1.0
-  # dart_ops_engine: ^0.4.0
+  dart_ops_engine: ^0.4.0
 
 dev_dependencies:
   lints: ^2.0.0

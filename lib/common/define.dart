@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:build_winner_app/environment.dart';
 import 'package:color_logger/color_logger.dart';
 import 'package:dio/dio.dart';
-import 'package:process_run/process_run.dart';
+import 'package:process_run/shell.dart';
 
 final logger = ColorLogger();
 final env = Environment();

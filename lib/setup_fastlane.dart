@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:build_winner_app/common/define.dart';
 import 'package:color_logger/color_logger.dart';
 import 'package:path/path.dart';
-import 'package:process_run/process_run.dart';
+import 'package:process_run/shell.dart';
 
 abstract class SetupFastlane {
   final String root;

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:build_winner_app/common/define.dart';
 import 'package:color_logger/color_logger.dart';
-import 'package:process_run/process_run.dart';
 
 class GetGitLog {
   final String root;
@@ -33,11 +32,11 @@ class GetGitLog {
       );
     }
     if (result.exitCode != 0) {
-      logger.log(result.errText, status: LogStatus.error);
+      logger.log(result.stderr, status: LogStatus.error);
       return null;
     }
     final messages = <String>[];
-    for (var element in result.outLines) {
+    for (var element in result.stdout) {
       /// 删除日志左右的空格
       final message = element.trim();
       if (message.isEmpty) continue;

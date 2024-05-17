@@ -1,3 +1,7 @@
+## 2.4.0
+
+- 🟢[Add] 新增iOS在发布应用商店版本自动移除Setting Bundle
+
 ## 2.3.1
 
 - 🟡[Change] 去掉了之前Log的文本修改Log传递分支名称

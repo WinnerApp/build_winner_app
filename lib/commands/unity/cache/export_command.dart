@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:build_winner_app/commands/unity/cache/cache_command.dart';
 import 'package:build_winner_app/common/define.dart';
 import 'package:color_logger/color_logger.dart';
-import 'package:process_run/process_run.dart';
 
 class ExportCommand extends BaseCacheCommand {
   ExportCommand() {
@@ -62,7 +61,7 @@ class ExportCommand extends BaseCacheCommand {
       stdout: stdoutController.sink,
     ).then((value) => value.first);
     if (success) exit(0);
-    logger.log(result.errText, status: LogStatus.error);
+    logger.log(result.stderr, status: LogStatus.error);
     exit(2);
   }
 

@@ -7,6 +7,7 @@ import 'package:build_winner_app/common/build_config.dart';
 import 'package:build_winner_app/common/define.dart';
 import 'package:build_winner_app/environment.dart';
 import 'package:build_winner_app/fix_ios_unity_cache.dart';
+import 'package:build_winner_app/remove_ios_setting_bundle.dart';
 import 'package:build_winner_app/setup_fastlane.dart';
 import 'package:build_winner_app/update_unity.dart';
 import 'package:color_logger/color_logger.dart';
@@ -74,6 +75,12 @@ class IosCommand extends BaseBuildCommand {
       await File(projectPath).writeAsString(contents);
 
       logger.log('已经去掉ld_classic', status: LogStatus.success);
+    }
+
+    if (dartDefineArgs
+        .any((element) => element == '--dart-define=isStoreVersion=true')) {
+      await RemoveIosSettingBundle(root: root).remove();
+      logger.log('移出Setting.bundle 成功!');
     }
 
     await BuildApp(
