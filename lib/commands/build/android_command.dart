@@ -8,8 +8,11 @@ import 'package:build_winner_app/common/define.dart';
 import 'package:build_winner_app/environment.dart';
 import 'package:build_winner_app/setup_fastlane.dart';
 import 'package:build_winner_app/update_unity.dart';
+import 'package:build_winner_app/upload_apk.dart';
 import 'package:color_logger/color_logger.dart';
+import 'package:darty_json_safe/darty_json_safe.dart';
 import 'package:path/path.dart';
+import 'package:process_run/shell.dart';
 
 class AndroidCommand extends BaseBuildCommand {
   @override
@@ -93,20 +96,10 @@ class AndroidCommand extends BaseBuildCommand {
   @override
   Future upload(String root) async {
     // build/app/outputs/apk/release/app-release.apk
-
-    final apkPath = join(
-        root, 'build', 'app', 'outputs', 'apk', 'release', 'app-release.apk');
-    if (!await File(apkPath).exists()) {
-      logger.log('$apkPath路径不存在!', status: LogStatus.error);
-      exit(2);
+    if (JSON(platformEnvironment)['ZEALOT_CHANNEL_KEY'].stringValue.isEmpty) {
+      return;
     }
-    final result = await runCommand(join(root, 'android'),
-            'fastlane deploy apk:"$apkPath" log:${environment.branch}')
-        .then((value) => value.first);
-    if (result.exitCode != 0) {
-      logger.log('上传失败!', status: LogStatus.error);
-      exit(result.exitCode);
-    }
+    await UploadApk(root: root, log: environment.branch).upload();
   }
 
   @override

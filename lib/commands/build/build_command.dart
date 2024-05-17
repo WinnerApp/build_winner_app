@@ -13,6 +13,7 @@ import 'package:build_winner_app/upload_sentry_symbols.dart';
 import 'package:color_logger/color_logger.dart';
 import 'package:darty_json_safe/darty_json_safe.dart';
 import 'package:path/path.dart';
+import 'package:process_run/shell.dart';
 
 List<String> dartDefineArgs = [];
 
@@ -267,14 +268,16 @@ $log
     await upload(environment.workspace);
     logger.log('上传安装包完成', status: LogStatus.success);
 
-    /// 发送更新日志到企业微信
-    logger.log('正在发送更新日志到企业微信');
-    await sendWeChat(log);
-    logger.log('发送更新日志到企业微信完成', status: LogStatus.success);
+    if (platformEnvironment['ZEALOT_CHANNEL_KEY'] != null) {
+      /// 发送更新日志到企业微信
+      logger.log('正在发送更新日志到企业微信');
+      await sendWeChat(log);
+      logger.log('发送更新日志到企业微信完成', status: LogStatus.success);
 
-    logger.log('正在发送更新日志到钉钉');
-    await sendTextToWeixinWebhooks(log, dingdingHookUrl);
-    logger.log('发送更新日志到钉钉完成', status: LogStatus.success);
+      logger.log('正在发送更新日志到钉钉');
+      await sendTextToWeixinWebhooks(log, dingdingHookUrl);
+      logger.log('发送更新日志到钉钉完成', status: LogStatus.success);
+    }
 
     /// 打包完毕更新打包配置
     buildInfo?.flutter = remoteRootCommit;
