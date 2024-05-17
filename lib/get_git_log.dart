@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:build_winner_app/common/define.dart';
 import 'package:color_logger/color_logger.dart';
+import 'package:darty_json_safe/darty_json_safe.dart';
 
 class GetGitLog {
   final String root;
@@ -36,7 +37,7 @@ class GetGitLog {
       return null;
     }
     final messages = <String>[];
-    for (var element in result.stdout) {
+    for (var element in JSON(result.stdout).stringValue.split('\n')) {
       /// 删除日志左右的空格
       final message = element.trim();
       if (message.isEmpty) continue;
