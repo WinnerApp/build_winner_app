@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:build_winner_app/commands/build/build_command.dart';
 import 'package:build_winner_app/common/define.dart';
 import 'package:color_logger/color_logger.dart';
+import 'package:path/path.dart';
 
 class BuildApp {
   final BuildPlatform platform;
@@ -15,8 +18,13 @@ class BuildApp {
     required this.buildNumber,
   });
   Future<bool> build() async {
+    var flutter = 'flutter';
+    final jsonFile = File(join(root, '.fvm', 'fvm_config.json'));
+    if (await jsonFile.exists()) {
+      flutter = 'fvm flutter';
+    }
     var script =
-        'flutter build ${platform.name} --build-name=$buildName --build-number=$buildNumber';
+        '$flutter build ${platform.name} --build-name=$buildName --build-number=$buildNumber';
     for (var args in dartDefineArgs) {
       script = '$script $args';
     }
