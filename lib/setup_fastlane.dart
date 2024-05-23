@@ -78,6 +78,7 @@ lane :deploy do |options|
     token: ENV['ZEALOT_TOKEN'],
     channel_key: ENV['ZEALOT_CHANNEL_KEY'],
     file: apk,
+    changelog: options[:changelog],
   )
 end
 

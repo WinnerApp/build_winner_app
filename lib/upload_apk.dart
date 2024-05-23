@@ -20,7 +20,7 @@ class UploadApk {
     }
     String command = 'fastlane deploy apk:$apkPath';
     if (log != null) {
-      command = '$command log:$log';
+      command = '$command changelog:$log';
     }
 
     final result = await runCommand(join(root, 'android'), command)
