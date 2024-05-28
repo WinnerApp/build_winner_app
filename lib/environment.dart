@@ -50,6 +50,8 @@ class Environment {
 
   late int buildNumber;
 
+  late UmengPushEnvironment umengPushEnvironment;
+
   setup(bool updateUnity) {
     workspace = env('WORKSPACE');
     iosHookUrl = env('IOS_HOOK_URL');
@@ -84,6 +86,12 @@ class Environment {
       apiKey: env('APPWRITE_API_KEY'),
       databaseId: env('APPWRITE_DATABASE_ID'),
       collectionId: env('APPWRITE_COLLECTION_ID'),
+    );
+
+    umengPushEnvironment = UmengPushEnvironment(
+      umengAppKey: env('UMENG_APPKEY'),
+      umengMessageSecret: env('UMENG_MESSAGE_SECRET'),
+      umengChannel: env('UMENG_CHANNEL'),
     );
 
     buildNumber = DateTime.now().millisecondsSinceEpoch ~/ 1000;
@@ -137,5 +145,17 @@ class AppwriteEnvironment {
     required this.apiKey,
     required this.databaseId,
     required this.collectionId,
+  });
+}
+
+class UmengPushEnvironment {
+  final String umengAppKey;
+  final String umengMessageSecret;
+  final String umengChannel;
+
+  UmengPushEnvironment({
+    required this.umengAppKey,
+    required this.umengMessageSecret,
+    required this.umengChannel,
   });
 }

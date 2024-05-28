@@ -85,6 +85,26 @@ class AndroidCommand extends BaseBuildCommand {
 //     await localPropertyFile.create();
 //     await localPropertyFile.writeAsString(localPropertyContent);
 
+    final localPropertyFile = File(join(root, 'android', 'local.properties'));
+    final lines = await localPropertyFile.readAsLines();
+    final keyValues = {
+      'UMENG_APPKEY': environment.umengPushEnvironment.umengAppKey,
+      'UMENG_MESSAGE_SECRET':
+          environment.umengPushEnvironment.umengMessageSecret,
+      'UMENG_CHANNEL': environment.umengPushEnvironment.umengChannel,
+    };
+
+    keyValues.forEach((key, value) {
+      final index = lines.indexWhere((element) => element.startsWith(key));
+      if (index == -1) {
+        lines.add('$key=$value');
+      } else {
+        lines[index] = '$key=$value';
+      }
+    });
+
+    await localPropertyFile.writeAsString(lines.join('\n'));
+
     await BuildApp(
       platform: BuildPlatform.android,
       root: root,
