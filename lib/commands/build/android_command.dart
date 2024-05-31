@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:build_winner_app/add_umeng_push_config.dart';
 import 'package:build_winner_app/build_app.dart';
 import 'package:build_winner_app/commands/build/build_command.dart';
 import 'package:build_winner_app/common/build_config.dart';
@@ -85,25 +86,12 @@ class AndroidCommand extends BaseBuildCommand {
 //     await localPropertyFile.create();
 //     await localPropertyFile.writeAsString(localPropertyContent);
 
-    final localPropertyFile = File(join(root, 'android', 'local.properties'));
-    final lines = await localPropertyFile.readAsLines();
-    final keyValues = {
-      'UMENG_APPKEY': environment.umengPushEnvironment.umengAppKey,
-      'UMENG_MESSAGE_SECRET':
-          environment.umengPushEnvironment.umengMessageSecret,
-      'UMENG_CHANNEL': environment.umengPushEnvironment.umengChannel,
-    };
-
-    keyValues.forEach((key, value) {
-      final index = lines.indexWhere((element) => element.startsWith(key));
-      if (index == -1) {
-        lines.add('$key=$value');
-      } else {
-        lines[index] = '$key=$value';
-      }
-    });
-
-    await localPropertyFile.writeAsString(lines.join('\n'));
+    await AddUmengPushConfig(
+      root: root,
+      umengAppKey: environment.umengPushEnvironment.umengAppKey,
+      umengMessageSecret: environment.umengPushEnvironment.umengMessageSecret,
+      umengChannel: environment.umengPushEnvironment.umengChannel,
+    ).add();
 
     await BuildApp(
       platform: BuildPlatform.android,

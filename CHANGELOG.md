@@ -1,3 +1,7 @@
+## 2.9.0
+
+- 🟢[Add] 新增addUmengPushConfig命令可以设置Umeng 通知的配置
+
 ## 2.8.0
 
 - 🟢[Add] 新增支持Umeng Push配置支持可以切换正式和测试配置
