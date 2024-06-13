@@ -24,7 +24,7 @@ class BuildApp {
       flutter = 'fvm flutter';
     }
     var script =
-        '$flutter build ${platform.name} --build-name=$buildName --build-number=$buildNumber';
+        '$flutter build ${platform.name} --build-name=$buildName --build-number=$buildNumber --split-debug-info=build/flutter_debug_info';
     for (var args in dartDefineArgs) {
       script = '$script $args';
     }
