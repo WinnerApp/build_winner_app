@@ -55,6 +55,9 @@ class Environment {
   /// 是否强制打包 跳过更新检测
   late bool forceBuild;
 
+  /// Unity打包分支的名称
+  late String unityBranchName;
+
   setup(bool updateUnity) {
     workspace = env('WORKSPACE');
     iosHookUrl = env('IOS_HOOK_URL');
@@ -99,6 +102,7 @@ class Environment {
 
     buildNumber = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     forceBuild = env('FORCE_BUILD') == 'true';
+    unityBranchName = env('UNITY_BRANCH_NAME');
   }
 
   String env(String name) {
