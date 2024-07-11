@@ -256,7 +256,7 @@ $log
 
     /// 判断是否需要更新
     bool needUpdateRoot = buildInfo?.flutter != remoteRootCommit;
-    if (!needUpdateRoot && !needUpdateUnity) {
+    if (!needUpdateRoot && !needUpdateUnity && !environment.forceBuild) {
       logger.log('没有任何的变动，打包停止!', status: LogStatus.warning);
       exit(0);
     }
