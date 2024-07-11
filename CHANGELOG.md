@@ -1,3 +1,8 @@
+## 2.11.0
+
+- 🟢[Add] 新增环境参数FORCE_BUILD支持可以强制打包
+- 🟢[Add] 新增支持自定义Unity分支打包
+
 ## 2.10.0
 
 - 🟢[Add] 新增--split-debug-info参数支持
