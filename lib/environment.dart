@@ -52,6 +52,9 @@ class Environment {
 
   late UmengPushEnvironment umengPushEnvironment;
 
+  /// 是否强制打包 跳过更新检测
+  late bool forceBuild;
+
   setup(bool updateUnity) {
     workspace = env('WORKSPACE');
     iosHookUrl = env('IOS_HOOK_URL');
@@ -95,6 +98,7 @@ class Environment {
     );
 
     buildNumber = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    forceBuild = env('FORCE_BUILD') == 'true';
   }
 
   String env(String name) {
