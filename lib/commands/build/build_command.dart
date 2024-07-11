@@ -100,6 +100,19 @@ abstract class BaseBuildCommand extends Command {
 
     /// 如果不跳过Unity自动更新则获取对应的Uity提交
     if (unityFullPath != null) {
+      /// 如果当前的分支和目标分支不是一个分支 则切换
+      if (await getLocalBranchName(unityFullPath!) !=
+          environment.unityBranchName) {
+        await runCommand(
+          unityFullPath!,
+          'git reset --hard',
+        );
+        await runCommand(
+          unityFullPath!,
+          'git switch ${environment.unityBranchName} -f',
+        );
+      }
+
       /// 获取Unity项目的本地提交
       localUnityCommit = await getGitLastCommitHash(unityFullPath!);
       logger.log('本地Unity提交: $localUnityCommit');
@@ -127,7 +140,7 @@ abstract class BaseBuildCommand extends Command {
     if (await getLocalBranchName(environment.workspace) != environment.branch) {
       await runCommand(
         environment.workspace,
-        'git switch ${environment.branch}',
+        'git switch ${environment.branch} -f',
       );
     }
 

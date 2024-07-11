@@ -17,7 +17,7 @@ Future<List<ProcessResult>> runCommand(
   bool ignoreError = false,
   StreamSink<List<int>>? stdout,
 }) async {
-  logger.log('执行命令：$command');
+  logger.log('执行命令：[$workingDirectory] [$command]');
   final shell = Shell(
     workingDirectory: workingDirectory,
     verbose: verbose,
