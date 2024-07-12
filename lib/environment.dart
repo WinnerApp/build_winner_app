@@ -58,6 +58,10 @@ class Environment {
   /// Unity打包分支的名称
   late String unityBranchName;
 
+  String get iosDir => join(workspace, 'ios');
+  String get androidDir => join(workspace, 'android');
+  String get flutterDir => join(workspace, 'metaapp_flutter');
+
   setup(bool updateUnity) {
     workspace = env('WORKSPACE');
     iosHookUrl = env('IOS_HOOK_URL');

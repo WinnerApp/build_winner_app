@@ -1,18 +1,19 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:build_winner_app/build_app.dart';
 import 'package:build_winner_app/commands/build/build_command.dart';
 import 'package:build_winner_app/common/build_config.dart';
 import 'package:build_winner_app/common/define.dart';
 import 'package:build_winner_app/environment.dart';
 import 'package:build_winner_app/fix_ios_unity_cache.dart';
 import 'package:build_winner_app/remove_ios_setting_bundle.dart';
+import 'package:build_winner_app/set_version_build_number.dart';
 import 'package:build_winner_app/setup_fastlane.dart';
 import 'package:build_winner_app/update_unity.dart';
 import 'package:color_logger/color_logger.dart';
 import 'package:darty_json_safe/darty_json_safe.dart';
 import 'package:path/path.dart';
+import 'package:process_run/shell.dart';
 import 'package:yaml/yaml.dart';
 
 class IosCommand extends BaseBuildCommand {
@@ -83,25 +84,35 @@ class IosCommand extends BaseBuildCommand {
       logger.log('移出Setting.bundle 成功!');
     }
 
-    await BuildApp(
-      platform: BuildPlatform.ios,
-      root: root,
-      buildName: environment.buildName,
-      buildNumber: environment.buildNumber,
-    ).build();
+    await SetVersionBuildNumber(environment: environment).runInIos();
+
+    await Shell(workingDirectory: environment.iosDir)
+        .run('pod install --verbose');
+
+    await Shell(workingDirectory: environment.iosDir).run(
+        'xcrun xcodebuild -configuration Release -workspace Runner.xcworkspace -scheme Runner -sdk iphoneos -destination generic/platform=iOS -archivePath ../build/ios/archive/Runner archive');
+    await Shell(workingDirectory: environment.iosDir).run(
+        'xcrun xcodebuild -exportArchive -archivePath ../build/ios/archive/Runner.xcarchive -exportPath ../build/ios/ipa -exportOptionsPlist exportOptions.plist');
+    // await BuildApp(
+    //   platform: BuildPlatform.ios,
+    //   root: root,
+    //   buildName: environment.buildName,
+    //   buildNumber: environment.buildNumber,
+    // ).build();
   }
 
   @override
   Future upload(String root) async {
     // build/ios/ipa/meta_winner_app.ipa
-    final yaml = loadYaml(File(join(root, 'pubspec.yaml')).readAsStringSync());
+    final yaml = loadYaml(
+        File(join(environment.flutterDir, 'pubspec.yaml')).readAsStringSync());
 
     final ipaPath = join(root, 'build', 'ios', 'ipa', '${yaml['name']}.ipa');
     if (!await File(ipaPath).exists()) {
       logger.log('$ipaPath路径不存在!', status: LogStatus.error);
       exit(2);
     }
-    final result = await runCommand(join(root, 'ios'),
+    final result = await runCommand(environment.iosDir,
             'fastlane upload_testflight ipa:$ipaPath changelog:${environment.branch}')
         .then((value) => value.first);
     if (result.exitCode != 0) {

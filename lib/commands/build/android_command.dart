@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:build_winner_app/add_umeng_push_config.dart';
-import 'package:build_winner_app/build_app.dart';
 import 'package:build_winner_app/commands/build/build_command.dart';
 import 'package:build_winner_app/common/build_config.dart';
 import 'package:build_winner_app/common/define.dart';
 import 'package:build_winner_app/environment.dart';
+import 'package:build_winner_app/set_version_build_number.dart';
 import 'package:build_winner_app/setup_fastlane.dart';
 import 'package:build_winner_app/update_unity.dart';
 import 'package:build_winner_app/upload_apk.dart';
@@ -93,12 +93,19 @@ class AndroidCommand extends BaseBuildCommand {
       umengChannel: environment.umengPushEnvironment.umengChannel,
     ).add();
 
-    await BuildApp(
-      platform: BuildPlatform.android,
-      root: root,
-      buildName: environment.buildName,
-      buildNumber: environment.buildNumber,
-    ).build();
+    await SetVersionBuildNumber(environment: environment).runInAndroid();
+
+    // await BuildApp(
+    //   platform: BuildPlatform.android,
+    //   root: root,
+    //   buildName: environment.buildName,
+    //   buildNumber: environment.buildNumber,
+    // ).build();
+
+    final gradlewPath = join(environment.androidDir, 'gradlew');
+
+    await Shell(workingDirectory: environment.androidDir).run(
+        '$gradlewPath --full-stacktrace --info -Pverbose=true -Ptarget-platform=android-arm,android-arm64,android-x64 -Ptarget=lib/main.dart -Pbase-application-name=android.app.Application -Pdart-obfuscation=false -Ptrack-widget-creation=true -Ptree-shake-icons=true assembleRelease');
   }
 
   @override

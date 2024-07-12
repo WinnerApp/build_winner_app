@@ -274,6 +274,14 @@ $log
       exit(0);
     }
 
+    /// 对于Flutter 进行pub get
+    await Shell(workingDirectory: environment.flutterDir)
+        .run('fvm flutter pub get');
+
+    /// 生成dart-define变量文件
+    await Shell(workingDirectory: environment.flutterDir)
+        .run('fvm flutter pub run dart_define generate');
+
     /// 进行打包
     await build(environment.workspace);
 
