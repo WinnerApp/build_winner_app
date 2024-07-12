@@ -6,6 +6,7 @@ import 'package:build_winner_app/commands/build/build_command.dart';
 import 'package:build_winner_app/common/build_config.dart';
 import 'package:build_winner_app/common/define.dart';
 import 'package:build_winner_app/environment.dart';
+import 'package:build_winner_app/set_version_build_number.dart';
 import 'package:build_winner_app/setup_fastlane.dart';
 import 'package:build_winner_app/update_unity.dart';
 import 'package:build_winner_app/upload_apk.dart';
@@ -91,7 +92,7 @@ class AndroidCommand extends BaseBuildCommand {
       umengMessageSecret: environment.umengPushEnvironment.umengMessageSecret,
       umengChannel: environment.umengPushEnvironment.umengChannel,
     ).add();
-
+    await SetVersionBuildNumber(environment: environment).runInAndroid();
     /**
      * WROKSPACE=$PWD
 

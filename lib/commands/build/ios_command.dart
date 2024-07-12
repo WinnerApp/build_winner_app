@@ -7,6 +7,7 @@ import 'package:build_winner_app/common/define.dart';
 import 'package:build_winner_app/environment.dart';
 import 'package:build_winner_app/fix_ios_unity_cache.dart';
 import 'package:build_winner_app/remove_ios_setting_bundle.dart';
+import 'package:build_winner_app/set_version_build_number.dart';
 import 'package:build_winner_app/setup_fastlane.dart';
 import 'package:build_winner_app/update_unity.dart';
 import 'package:color_logger/color_logger.dart';
@@ -81,6 +82,8 @@ class IosCommand extends BaseBuildCommand {
       await RemoveIosSettingBundle(root: root).remove();
       logger.log('移出Setting.bundle 成功!');
     }
+
+    await SetVersionBuildNumber(environment: environment).runInIos();
     /**
      * 
 cd $WROKSPACE/metaapp_flutter
@@ -129,7 +132,7 @@ xcodebuild -exportArchive -archivePath ../build/ios/Runner.xcarchive -exportPath
       logger.log('$ipaPath路径不存在!', status: LogStatus.error);
       exit(2);
     }
-    final result = await runCommand(join(root, 'ios'),
+    final result = await runCommand(environment.iosDir,
             'fastlane upload_testflight ipa:$ipaPath changelog:${environment.branch}')
         .then((value) => value.first);
     if (result.exitCode != 0) {
