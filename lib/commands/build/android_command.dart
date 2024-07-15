@@ -93,12 +93,34 @@ class AndroidCommand extends BaseBuildCommand {
       umengChannel: environment.umengPushEnvironment.umengChannel,
     ).add();
 
-    await BuildApp(
-      platform: BuildPlatform.android,
-      root: root,
-      buildName: environment.buildName,
-      buildNumber: environment.buildNumber,
-    ).build();
+    /**
+     * WROKSPACE=$PWD
+
+cd $WROKSPACE/metaapp_flutter
+fvm flutter clean
+fvm flutter pub get
+cd $WROKSPACE/android
+./gradlew clean
+./gradlew assembleRelease
+     */
+
+    await Shell(workingDirectory: '${environment.workspace}/metaapp_flutter')
+        .run('''
+fvm flutter clean
+fvm flutter pub get
+''');
+
+    await Shell(workingDirectory: '${environment.workspace}/android').run('''
+./gradlew clean
+./gradlew assembleRelease
+''');
+
+    // await BuildApp(
+    //   platform: BuildPlatform.android,
+    //   root: root,
+    //   buildName: environment.buildName,
+    //   buildNumber: environment.buildNumber,
+    // ).build();
   }
 
   @override

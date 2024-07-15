@@ -13,6 +13,7 @@ import 'package:build_winner_app/update_unity.dart';
 import 'package:color_logger/color_logger.dart';
 import 'package:darty_json_safe/darty_json_safe.dart';
 import 'package:path/path.dart';
+import 'package:process_run/shell.dart';
 import 'package:yaml/yaml.dart';
 
 class IosCommand extends BaseBuildCommand {
@@ -82,21 +83,47 @@ class IosCommand extends BaseBuildCommand {
       await RemoveIosSettingBundle(root: root).remove();
       logger.log('移出Setting.bundle 成功!');
     }
+    /**
+     * 
+cd $WROKSPACE/metaapp_flutter
 
-    await BuildApp(
-      platform: BuildPlatform.ios,
-      root: root,
-      buildName: environment.buildName,
-      buildNumber: environment.buildNumber,
-    ).build();
+fvm flutter clean
+fvm flutter pub get
+cd $WROKSPACE/ios
+pod install
+
+XCARCHIVE_PATH=$WROKSPACE/build/ios/Runner.xcarchive
+xcodebuild -workspace Runner.xcworkspace -scheme Runner -archivePath $XCARCHIVE_PATH -configuration Release archive
+xcodebuild -exportArchive -archivePath $XCARCHIVE_PATH -exportPath ../build/ios/ipa -exportOptionsPlist ExportOptions.plist
+
+     */
+
+    await Shell(workingDirectory: '${environment.workspace}/metaapp_flutter')
+        .run('''
+fvm flutter clean
+fvm flutter pub get
+''');
+
+    await Shell(workingDirectory: '${environment.workspace}/ios').run('''
+pod install
+xcodebuild -workspace Runner.xcworkspace -scheme Runner -archivePath ../build/ios/Runner.xcarchive -configuration Release archive
+xcodebuild -exportArchive -archivePath ../build/ios/Runner.xcarchive -exportPath ../build/ios/ipa -exportOptionsPlist ExportOptions.plist
+''');
+
+    // await BuildApp(
+    //   platform: BuildPlatform.ios,
+    //   root: root,
+    //   buildName: environment.buildName,
+    //   buildNumber: environment.buildNumber,
+    // ).build();
   }
 
   @override
   Future upload(String root) async {
     // build/ios/ipa/meta_winner_app.ipa
-    final yaml = loadYaml(File(join(root, 'pubspec.yaml')).readAsStringSync());
+    // final yaml = loadYaml(File(join(root, 'pubspec.yaml')).readAsStringSync());
 
-    final ipaPath = join(root, 'build', 'ios', 'ipa', '${yaml['name']}.ipa');
+    final ipaPath = join(root, 'build', 'ios', 'ipa', 'meta_winner_app.ipa');
     if (!await File(ipaPath).exists()) {
       logger.log('$ipaPath路径不存在!', status: LogStatus.error);
       exit(2);
