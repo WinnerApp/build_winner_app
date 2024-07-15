@@ -1,3 +1,7 @@
+## 3.0.0-beta3
+
+- 🟢[Add] 新增iOS支持ZEALOT_CHANNEL_KEY参数可以取消自动上传功能
+
 ## 3.0.0-beta2
 
 - 🟡[Change] 修复了2.0架构的打包问题
