@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:build_winner_app/add_umeng_push_config.dart';
-import 'package:build_winner_app/build_app.dart';
 import 'package:build_winner_app/commands/build/build_command.dart';
 import 'package:build_winner_app/common/build_config.dart';
 import 'package:build_winner_app/common/define.dart';
