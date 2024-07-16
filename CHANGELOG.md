@@ -1,3 +1,7 @@
+## 3.0.0-beta4
+
+- 🔴[Fix] 修复了无法设置版本号和build number的问题
+
 ## 3.0.0-beta3
 
 - 🟢[Add] 新增iOS支持ZEALOT_CHANNEL_KEY参数可以取消自动上传功能
