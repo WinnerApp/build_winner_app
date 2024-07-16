@@ -38,6 +38,7 @@ class SetVersionBuildNumber {
         lineTexts[i] = 'flutter.versionCode=${environment.buildNumber}';
       }
     }
+    await androidConfigFile.writeAsString(lineTexts.join('\n'));
   }
 
   String get iosConfigPath =>
