@@ -282,6 +282,12 @@ $log
     await Shell(workingDirectory: environment.flutterDir)
         .run('fvm flutter pub get');
 
+    final dartDefineFile =
+        File(join(environment.flutterDir, 'assets', 'dart_define.json'));
+    if (await dartDefineFile.exists()) {
+      await dartDefineFile.delete();
+    }
+
     /// 生成dart-define变量文件
     await Shell(workingDirectory: environment.flutterDir)
         .run('fvm flutter pub run dart_define generate');
