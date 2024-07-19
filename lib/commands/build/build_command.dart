@@ -136,6 +136,10 @@ abstract class BaseBuildCommand extends Command {
     bool needUpdateUnity = lastUnityBuildId != remoteUnityCommit &&
         environment.unityEnvironment != null;
 
+    if (environment.forceBuild) {
+      needUpdateUnity = true;
+    }
+
     /// 如果当前的分支和目标分支不是一个分支 则切换
     if (await getLocalBranchName(environment.workspace) != environment.branch) {
       await runCommand(
