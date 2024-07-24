@@ -129,7 +129,7 @@ fvm flutter pub get
     if (JSON(platformEnvironment)['ZEALOT_CHANNEL_KEY'].stringValue.isEmpty) {
       return;
     }
-    await UploadApk(root: root, log: environment.branch).upload();
+    await UploadApk(root: root, log: log).upload();
   }
 
   @override

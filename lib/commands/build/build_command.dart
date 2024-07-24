@@ -85,9 +85,6 @@ abstract class BaseBuildCommand extends Command {
     /// 初始化环境变量 提示用户必须设置对应的环境变量
     environment.setup(!skipUnityUpdate);
 
-    /// 初始化Fastlane 支持后面上传iPA或者APK
-    await setupFastlane.setup();
-
     /// 初始化打包配置管理器
     final buildConfigManager = getBuildConfigManager(
         appwriteEnvironment: environment.appwriteEnvironment);
@@ -215,14 +212,14 @@ $log
 -----------------------
 $logFooter
 ''';
-
-      _log = '[Branch]: ${environment.branch} 新版本发布了，请下载体验!';
-
-      logger.log('''
-更新日志:
-$log
-''', status: LogStatus.warning);
     }
+
+    _log = '[Branch]: ${environment.branch} 新版本发布了，请下载体验!';
+
+    logger.log('''
+更新日志:
+${log.isEmpty ? "暂无更新内容" : log}
+''', status: LogStatus.warning);
 
     final unityEnvironment = environment.unityEnvironment;
     if (unityEnvironment != null && unityFullPath != null) {
@@ -291,6 +288,9 @@ $log
     /// 生成dart-define变量文件
     await Shell(workingDirectory: environment.flutterDir)
         .run('fvm flutter pub run dart_define generate');
+
+    /// 初始化Fastlane 支持后面上传iPA或者APK
+    await setupFastlane.setup();
 
     /// 进行打包
     await build(environment.workspace);
