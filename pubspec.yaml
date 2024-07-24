@@ -1,6 +1,6 @@
 name: build_winner_app
 description: 自动化打包稳健医疗App工具.
-version: 3.0.0-beta8
+version: 3.0.0-beta9
 repository: https://github.com/WinnerApp/build_winner_app
 
 environment:

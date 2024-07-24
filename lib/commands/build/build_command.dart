@@ -214,7 +214,7 @@ $logFooter
 ''';
     }
 
-    _log = '[Branch]: ${environment.branch} 新版本发布了，请下载体验!';
+    _log = '[Branch] ${environment.branch} 新版本发布了，请下载体验!';
 
     logger.log('''
 更新日志:
