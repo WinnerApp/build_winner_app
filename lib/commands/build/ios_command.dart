@@ -133,7 +133,7 @@ xcodebuild -exportArchive -archivePath ../build/ios/Runner.xcarchive -exportPath
       exit(2);
     }
     final result = await runCommand(environment.iosDir,
-            'fastlane upload_testflight ipa:$ipaPath changelog:$log')
+            'fastlane upload_testflight ipa:$ipaPath changelog:\'$log\'')
         .then((value) => value.first);
     if (result.exitCode != 0) {
       logger.log('上传失败!', status: LogStatus.error);
