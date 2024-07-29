@@ -126,7 +126,7 @@ fvm flutter pub get
   @override
   Future upload(String root) async {
     // build/app/outputs/apk/release/app-release.apk
-    if (JSON(platformEnvironment)['ZEALOT_CHANNEL_KEY'].stringValue.isEmpty) {
+    if (!environment.upload) {
       return;
     }
     await UploadApk(root: root, log: log).upload();

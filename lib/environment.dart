@@ -62,6 +62,9 @@ class Environment {
   String get androidDir => join(workspace, 'android');
   String get flutterDir => join(workspace, 'metaapp_flutter');
 
+  late bool upload;
+  late bool sendLog;
+
   setup(bool updateUnity) {
     workspace = env('WORKSPACE');
     iosHookUrl = env('IOS_HOOK_URL');
@@ -107,6 +110,8 @@ class Environment {
     buildNumber = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     forceBuild = env('FORCE_BUILD') == 'true';
     unityBranchName = env('UNITY_BRANCH_NAME');
+    upload = env('UPLOAD') == 'true';
+    sendLog = env('SEND_LOG') == 'true';
   }
 
   String env(String name) {

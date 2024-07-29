@@ -299,7 +299,7 @@ ${log.isEmpty ? "暂无更新内容" : log}
     await upload(environment.workspace);
     logger.log('上传安装包完成', status: LogStatus.success);
 
-    if (platformEnvironment['ZEALOT_CHANNEL_KEY'] != null && !isStoreVersion) {
+    if (environment.sendLog) {
       /// 发送更新日志到企业微信
       logger.log('正在发送更新日志到企业微信');
       await sendWeChat(log);

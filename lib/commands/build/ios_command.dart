@@ -123,7 +123,7 @@ xcodebuild -exportArchive -archivePath ../build/ios/Runner.xcarchive -exportPath
   Future upload(String root) async {
     // build/ios/ipa/meta_winner_app.ipa
     // final yaml = loadYaml(File(join(root, 'pubspec.yaml')).readAsStringSync());
-    if (JSON(platformEnvironment)['ZEALOT_CHANNEL_KEY'].stringValue.isEmpty) {
+    if (!environment.upload) {
       return;
     }
 
