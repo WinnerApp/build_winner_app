@@ -11,7 +11,6 @@ import 'package:build_winner_app/setup_fastlane.dart';
 import 'package:build_winner_app/update_unity.dart';
 import 'package:build_winner_app/upload_apk.dart';
 import 'package:color_logger/color_logger.dart';
-import 'package:darty_json_safe/darty_json_safe.dart';
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart';
 
