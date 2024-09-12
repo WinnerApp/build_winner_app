@@ -66,6 +66,12 @@ class Environment {
   late bool upload;
   late bool sendLog;
 
+  /// Flutter上次打包最后的commit
+  late String flutterLastCommitHash;
+
+  /// Unity上次打包最后的commit
+  late String unityLastCommitHash;
+
   setup(bool updateUnity) {
     workspace = env('WORKSPACE');
     iosHookUrl = env('IOS_HOOK_URL');
@@ -115,6 +121,9 @@ class Environment {
     unityBranchName = env('UNITY_BRANCH_NAME');
     upload = env('UPLOAD') == 'true';
     sendLog = env('SEND_LOG') == 'true';
+
+    flutterLastCommitHash = env('FLUTTER_LAST_COMMIT_HASH');
+    unityLastCommitHash = env('UNITY_LAST_COMMIT_HASH');
   }
 
   String env(String name, [bool force = true]) {
