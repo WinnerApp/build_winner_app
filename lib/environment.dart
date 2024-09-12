@@ -113,7 +113,7 @@ class Environment {
       umengMessageSecret: env('UMENG_MESSAGE_SECRET'),
       umengChannel: env('UMENG_CHANNEL'),
     );
-    final customBuildNumber = env('BUILD_NUMBER');
+    final customBuildNumber = env('BUILD_NUMBER', false);
     buildNumber = customBuildNumber.isNotEmpty
         ? JSON(customBuildNumber).intValue
         : DateTime.now().millisecondsSinceEpoch ~/ 1000;
