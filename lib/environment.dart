@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:build_winner_app/common/define.dart';
 import 'package:color_logger/color_logger.dart';
+import 'package:darty_json_safe/darty_json_safe.dart';
 import 'package:path/path.dart';
 
 class Environment {
@@ -106,18 +107,24 @@ class Environment {
       umengMessageSecret: env('UMENG_MESSAGE_SECRET'),
       umengChannel: env('UMENG_CHANNEL'),
     );
-
-    buildNumber = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    final customBuildNumber = env('BUILD_NUMBER');
+    buildNumber = customBuildNumber.isNotEmpty
+        ? JSON(customBuildNumber).intValue
+        : DateTime.now().millisecondsSinceEpoch ~/ 1000;
     forceBuild = env('FORCE_BUILD') == 'true';
     unityBranchName = env('UNITY_BRANCH_NAME');
     upload = env('UPLOAD') == 'true';
     sendLog = env('SEND_LOG') == 'true';
   }
 
-  String env(String name) {
+  String env(String name, [bool force = true]) {
     if (Platform.environment[name] == null) {
-      logger.log('$name 环境变量未配置', status: LogStatus.error);
-      exit(1);
+      if (force) {
+        logger.log('$name 环境变量未配置', status: LogStatus.error);
+        exit(1);
+      } else {
+        return '';
+      }
     }
     return Platform.environment[name]!;
   }
