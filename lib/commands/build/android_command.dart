@@ -124,7 +124,14 @@ fvm flutter pub get
 
   @override
   Future upload(String root) async {
-    // build/app/outputs/apk/release/app-release.apk
+    final apkPath = join(
+        root, 'build', 'app', 'outputs', 'apk', 'release', 'app-release.apk');
+    final channel = environment.umengPushEnvironment.umengChannel;
+    final buildName = environment.buildName;
+    final buildNumber = environment.buildNumber.toString();
+    final copyFilePath = join(root, 'ignore_dir', 'android', 'apk',
+        '${channel}_${buildName}_$buildNumber.apk');
+    await File(apkPath).copy(copyFilePath);
     if (!environment.upload) {
       return;
     }

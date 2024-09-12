@@ -121,13 +121,19 @@ xcodebuild -exportArchive -archivePath ../build/ios/Runner.xcarchive -exportPath
 
   @override
   Future upload(String root) async {
-    // build/ios/ipa/meta_winner_app.ipa
-    // final yaml = loadYaml(File(join(root, 'pubspec.yaml')).readAsStringSync());
+    final ipaPath = join(root, 'build', 'ios', 'ipa', 'meta_winner_app.ipa');
+    final channel = environment.umengPushEnvironment.umengChannel;
+    final buildName = environment.buildName;
+    final buildNumber = environment.buildNumber.toString();
+    final copyFilePath = join(root, 'ignore_dir', 'ios', 'ipa',
+        '${channel}_${buildName}_$buildNumber.ipa');
+
+    await File(ipaPath).copy(copyFilePath);
+
     if (!environment.upload) {
       return;
     }
 
-    final ipaPath = join(root, 'build', 'ios', 'ipa', 'meta_winner_app.ipa');
     if (!await File(ipaPath).exists()) {
       logger.log('$ipaPath路径不存在!', status: LogStatus.error);
       exit(2);
