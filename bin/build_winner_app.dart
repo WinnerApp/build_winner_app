@@ -2,6 +2,7 @@ import 'package:build_winner_app/commands/add_umeng_push_config_command.dart';
 import 'package:build_winner_app/commands/build/build_command.dart';
 import 'package:build_winner_app/commands/build/upload_apk_channel.dart';
 import 'package:build_winner_app/commands/send_text_to_webhooks.dart';
+import 'package:build_winner_app/commands/unity/cache/export_command.dart';
 import 'package:dart_ops_engine/dart_ops_engine.dart';
 // import 'package:dart_ops_engine/commons/dart_ops_engine.dart';
 
@@ -23,7 +24,8 @@ void main(List<String> arguments) async {
   engine.runner
     ..addCommand(BuildCommand())
     ..addCommand(SendTextToWebHooksCommand())
-    ..addCommand(UploadApkChannel());
+    ..addCommand(UploadApkChannel())
+    ..addCommand(ExportCommand());
   await engine.run();
 
   // final runner = CommandRunner(

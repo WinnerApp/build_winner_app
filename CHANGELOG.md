@@ -1,3 +1,7 @@
+## 3.0.0-beta17
+
+- [Fix] 修复FLUTTER_LAST_COMMIT_HASH和UNITY_LAST_COMMIT_HASH参数非必须变成必须
+
 ## 3.0.0-beta16
 
 - [Fix] 修复了BUILD_NUMBER成为了必备的设置错误
