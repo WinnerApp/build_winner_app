@@ -122,8 +122,8 @@ class Environment {
     upload = env('UPLOAD') == 'true';
     sendLog = env('SEND_LOG') == 'true';
 
-    flutterLastCommitHash = env('FLUTTER_LAST_COMMIT_HASH');
-    unityLastCommitHash = env('UNITY_LAST_COMMIT_HASH');
+    flutterLastCommitHash = env('FLUTTER_LAST_COMMIT_HASH', false);
+    unityLastCommitHash = env('UNITY_LAST_COMMIT_HASH', false);
   }
 
   String env(String name, [bool force = true]) {
