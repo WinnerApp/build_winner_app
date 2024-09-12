@@ -54,7 +54,7 @@ lane :upload_testflight do |options|
     changelog: changelog,
     skip_waiting_for_build_processing: true,
     distribute_external: true,
-    groups: ["TEST1"],
+    groups: ["内部测试公开组"],
   )
 end
 ''';
