@@ -72,6 +72,9 @@ class Environment {
   /// Unity上次打包最后的commit
   late String unityLastCommitHash;
 
+  /// 当前安卓的渠道
+  late String androidChannel;
+
   setup(bool updateUnity) {
     workspace = env('WORKSPACE');
     iosHookUrl = env('IOS_HOOK_URL');
@@ -124,6 +127,8 @@ class Environment {
 
     flutterLastCommitHash = env('FLUTTER_LAST_COMMIT_HASH', false);
     unityLastCommitHash = env('UNITY_LAST_COMMIT_HASH', false);
+
+    androidChannel = env('androidChannel');
   }
 
   String env(String name, [bool force = true]) {
