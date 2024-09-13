@@ -1,3 +1,7 @@
+## 3.0.0-beta18
+
+- [Fix] 修复复制文件因为路径不存在报错
+
 ## 3.0.0-beta17
 
 - [Fix] 修复FLUTTER_LAST_COMMIT_HASH和UNITY_LAST_COMMIT_HASH参数非必须变成必须
