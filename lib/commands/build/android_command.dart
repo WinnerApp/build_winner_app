@@ -126,7 +126,7 @@ fvm flutter pub get
   Future upload(String root) async {
     final apkPath = join(
         root, 'build', 'app', 'outputs', 'apk', 'release', 'app-release.apk');
-    final channel = environment.umengPushEnvironment.umengChannel;
+    final channel = environment.androidChannel;
     final buildName = environment.buildName;
     final buildNumber = environment.buildNumber.toString();
     final copyDir = Directory(join(root, 'ignore_dir', 'android', 'apk'));

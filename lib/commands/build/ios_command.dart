@@ -122,7 +122,7 @@ xcodebuild -exportArchive -archivePath ../build/ios/Runner.xcarchive -exportPath
   @override
   Future upload(String root) async {
     final ipaPath = join(root, 'build', 'ios', 'ipa', 'meta_winner_app.ipa');
-    final channel = environment.umengPushEnvironment.umengChannel;
+    final channel = 'AppStore';
     final buildName = environment.buildName;
     final buildNumber = environment.buildNumber.toString();
     final copyDir = Directory(join(root, 'ignore_dir', 'ios', 'ipa'));
