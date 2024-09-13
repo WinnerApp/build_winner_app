@@ -129,8 +129,12 @@ fvm flutter pub get
     final channel = environment.umengPushEnvironment.umengChannel;
     final buildName = environment.buildName;
     final buildNumber = environment.buildNumber.toString();
-    final copyFilePath = join(root, 'ignore_dir', 'android', 'apk',
-        '${channel}_${buildName}_$buildNumber.apk');
+    final copyDir = Directory(join(root, 'ignore_dir', 'android', 'apk'));
+    if (!await copyDir.exists()) {
+      await copyDir.create(recursive: true);
+    }
+    final copyFilePath =
+        join(copyDir.path, '${channel}_${buildName}_$buildNumber.apk');
     await File(apkPath).copy(copyFilePath);
     if (!environment.upload) {
       return;

@@ -125,8 +125,12 @@ xcodebuild -exportArchive -archivePath ../build/ios/Runner.xcarchive -exportPath
     final channel = environment.umengPushEnvironment.umengChannel;
     final buildName = environment.buildName;
     final buildNumber = environment.buildNumber.toString();
-    final copyFilePath = join(root, 'ignore_dir', 'ios', 'ipa',
-        '${channel}_${buildName}_$buildNumber.ipa');
+    final copyDir = Directory(join(root, 'ignore_dir', 'ios', 'ipa'));
+    if (!await copyDir.exists()) {
+      await copyDir.create(recursive: true);
+    }
+    final copyFilePath =
+        join(copyDir.path, '${channel}_${buildName}_$buildNumber.ipa');
 
     await File(ipaPath).copy(copyFilePath);
 
