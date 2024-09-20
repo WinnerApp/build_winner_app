@@ -15,7 +15,7 @@ dependencies:
   dio: ^5.4.0
   yaml: ^3.1.2
   darty_json_safe: ^1.0.3
-  dart_appwrite: ^10.1.0
+  dart_appwrite: ^12.0.0
   dart_ops_engine: ^0.4.0
 
 dev_dependencies:
