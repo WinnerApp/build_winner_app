@@ -1,3 +1,7 @@
+## 3.0.0-beta20
+
+- [Change] 升级dart_appwrite到12 适配最新的Appwrite服务器16
+
 ## 3.0.0-beta19
 
 - [Fix] 修复生成包渠道名字错误
