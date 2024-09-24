@@ -1,3 +1,8 @@
+## 3.0.0-beta21
+
+- [Change] 修改参数skip_waiting_for_build_processing=false 为了尝试解决不会分发给外部组的问题
+
+
 ## 3.0.0-beta20
 
 - [Change] 升级dart_appwrite到12 适配最新的Appwrite服务器16
