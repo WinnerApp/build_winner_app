@@ -52,7 +52,7 @@ lane :upload_testflight do |options|
     apple_id: ENV['APP_ID'],
     ipa: ipa,
     changelog: changelog,
-    skip_waiting_for_build_processing: true,
+    skip_waiting_for_build_processing: false,
     distribute_external: true,
     groups: ["内部测试公开组"],
   )
