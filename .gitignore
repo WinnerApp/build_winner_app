@@ -4,3 +4,4 @@
 launch.json
 appwrite.yaml
 test.sh
+pubspec.lock

@@ -1,3 +1,7 @@
+## 3.0.0-beta22
+
+- [Fix] 修复发布公开组可能因为上一个在审核导致失败
+
 ## 3.0.0-beta21
 
 - [Change] 修改参数skip_waiting_for_build_processing=false 为了尝试解决不会分发给外部组的问题
