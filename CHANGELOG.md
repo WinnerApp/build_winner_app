@@ -1,3 +1,7 @@
+## 3.0.0-beta23
+
+- [Fix] 修复使用reject_build_waiting_for_review取消上一次审核
+
 ## 3.0.0-beta22
 
 - [Fix] 修复发布公开组可能因为上一个在审核导致失败
