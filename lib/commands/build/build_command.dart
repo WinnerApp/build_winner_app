@@ -162,8 +162,10 @@ abstract class BaseBuildCommand extends Command {
       /// 将Unity更新到最新
       await updateGitBranch(unityFullPath!);
 
-      final currentCommitId =
-          buildInfo?.unity.log ?? environment.unityLastCommitHash;
+      var currentCommitId = JSON(buildInfo?.unity.log).stringValue;
+      if (currentCommitId.isEmpty) {
+        currentCommitId = environment.unityLastCommitHash;
+      }
       if (currentCommitId.isEmpty) {
         throw Exception('请使用UNITY_LAST_COMMIT_HASH设置上一次Unity打包的Commit ID');
       }
@@ -188,8 +190,10 @@ $unityLog
       /// 更新当前打包工程的代码
       await updateGitBranch(environment.workspace);
 
-      final currentCommitId =
-          buildInfo?.flutter ?? environment.flutterLastCommitHash;
+      var currentCommitId = JSON(buildInfo?.flutter).stringValue;
+      if (currentCommitId.isEmpty) {
+        currentCommitId = environment.flutterLastCommitHash;
+      }
       if (currentCommitId.isEmpty) {
         throw Exception('请使用FLUTTER_LAST_COMMIT_HASH设置上一次Flutter打包的Commit ID');
       }
