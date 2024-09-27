@@ -1,3 +1,7 @@
+## 3.0.0-beta24
+
+- [Fix] 修复如果后台最新的值为空会导致逻辑错误
+
 ## 3.0.0-beta23
 
 - [Fix] 修复使用reject_build_waiting_for_review取消上一次审核
