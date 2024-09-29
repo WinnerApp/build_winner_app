@@ -104,6 +104,12 @@ abstract class BaseBuildCommand extends Command {
           unityFullPath!,
           'git reset --hard',
         );
+
+        /// 拉取最新的服务器代码 防止有的分支无法切换
+        await runCommand(
+          unityFullPath!,
+          'git pull origin',
+        );
         await runCommand(
           unityFullPath!,
           'git switch ${environment.unityBranchName} -f',
@@ -120,14 +126,11 @@ abstract class BaseBuildCommand extends Command {
     }
 
     /// 获取当前打包平台的上一次打包配置
-    final buildInfo = await buildConfigManager.getBuildConfig();
-    // if (buildInfo == null) {
-    //   logger.log('打包配置不存在!', status: LogStatus.error);
-    //   exit(2);
-    // }
+    var buildInfo = await buildConfigManager.getBuildConfig();
+    buildInfo ??= BuildInfo.fromJson({});
 
     /// 获取上一次Unity打包的ID
-    final lastUnityBuildId = buildInfo?.unity.cache;
+    final lastUnityBuildId = buildInfo.unity.cache;
 
     /// Unity是否需要更新 通过本地和远程的对比 可以防止打包失败了 但是依然需要重新导包
     bool needUpdateUnity = lastUnityBuildId != remoteUnityCommit &&
@@ -158,11 +161,11 @@ abstract class BaseBuildCommand extends Command {
     var log = '';
 
     /// 如果unity最后一次日志的ID和目前远程的不是一致 并且没有跳过Unity更新
-    if (buildInfo?.unity.log != remoteUnityCommit && unityFullPath != null) {
+    if (buildInfo.unity.log != remoteUnityCommit && unityFullPath != null) {
       /// 将Unity更新到最新
       await updateGitBranch(unityFullPath!);
 
-      var currentCommitId = JSON(buildInfo?.unity.log).stringValue;
+      var currentCommitId = JSON(buildInfo.unity.log).stringValue;
       if (currentCommitId.isEmpty) {
         currentCommitId = environment.unityLastCommitHash;
       }
@@ -186,11 +189,11 @@ $unityLog
       }
     }
 
-    if (buildInfo?.flutter != remoteRootCommit) {
+    if (buildInfo.flutter != remoteRootCommit) {
       /// 更新当前打包工程的代码
       await updateGitBranch(environment.workspace);
 
-      var currentCommitId = JSON(buildInfo?.flutter).stringValue;
+      var currentCommitId = JSON(buildInfo.flutter).stringValue;
       if (currentCommitId.isEmpty) {
         currentCommitId = environment.flutterLastCommitHash;
       }
@@ -250,7 +253,7 @@ ${log.isEmpty ? "暂无更新内容" : log}
           !await Directory(fromUnityFrameworkPath).exists()) {
         /// 导出Unity包
         await updateUnity(unityEnvironment);
-        buildInfo?.unity.cache = remoteUnityCommit!;
+        buildInfo.unity.cache = remoteUnityCommit!;
 
         /// 更新当前最后一次Unity缓存的ID
         await buildConfigManager.setBuildConfig(
@@ -285,7 +288,7 @@ ${log.isEmpty ? "暂无更新内容" : log}
     }
 
     /// 判断是否需要更新
-    bool needUpdateRoot = buildInfo?.flutter != remoteRootCommit;
+    bool needUpdateRoot = buildInfo.flutter != remoteRootCommit;
     if (!needUpdateRoot && !needUpdateUnity && !environment.forceBuild) {
       logger.log('没有任何的变动，打包停止!', status: LogStatus.warning);
       exit(0);
@@ -327,9 +330,9 @@ ${log.isEmpty ? "暂无更新内容" : log}
     }
 
     /// 打包完毕更新打包配置
-    buildInfo?.flutter = remoteRootCommit;
+    buildInfo.flutter = remoteRootCommit;
     if (!skipUnityUpdate) {
-      buildInfo?.unity.log = remoteUnityCommit!;
+      buildInfo.unity.log = remoteUnityCommit!;
     }
     await buildConfigManager.setBuildConfig(
       buildInfo: buildInfo,
