@@ -128,7 +128,8 @@ class BuildConfigManager {
         data: {
           'platform': platform,
           'build_name': buildName,
-          'build_time': DateTime.fromMillisecondsSinceEpoch(buildTime * 1000),
+          'build_time': DateTime.fromMillisecondsSinceEpoch(buildTime * 1000)
+              .toIso8601String(),
           'build_number': buildTime,
           'flutter_conmit': JSON(buildInfo?.flutter).stringValue,
           'unity_cache_commit': JSON(buildInfo?.unity.cache).stringValue,
