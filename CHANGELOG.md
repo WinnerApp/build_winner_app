@@ -1,3 +1,7 @@
+## 3.0.0-beta27
+
+- [Change] 升级AppwriteSDK 12.0.0->12.1.0
+
 ## 3.0.0-beta26
 
 - [Fix] 尝试修复build_time字段类型错误问题
