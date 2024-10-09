@@ -1,3 +1,7 @@
+## 3.0.0-beta28
+
+- [Remove] 移除build_time不需要的字段
+
 ## 3.0.0-beta27
 
 - [Change] 升级AppwriteSDK 12.0.0->12.1.0
