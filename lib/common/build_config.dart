@@ -88,7 +88,7 @@ class BuildConfigManager {
       queries: [
         Query.equal('platform', platform),
         Query.equal('branch', branch),
-        Query.orderDesc('build_time'),
+        // Query.orderDesc('build_time'),
       ],
     );
 
@@ -128,8 +128,8 @@ class BuildConfigManager {
         data: {
           'platform': platform,
           'build_name': buildName,
-          'build_time': DateTime.fromMillisecondsSinceEpoch(buildTime * 1000)
-              .toIso8601String(),
+          // 'build_time': DateTime.fromMillisecondsSinceEpoch(buildTime * 1000)
+          //     .toIso8601String(),
           'build_number': buildTime,
           'flutter_conmit': JSON(buildInfo?.flutter).stringValue,
           'unity_cache_commit': JSON(buildInfo?.unity.cache).stringValue,
