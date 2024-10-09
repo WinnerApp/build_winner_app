@@ -88,7 +88,7 @@ class BuildConfigManager {
       queries: [
         Query.equal('platform', platform),
         Query.equal('branch', branch),
-        // Query.orderDesc('build_time'),
+        Query.orderDesc('\$createdAt'),
       ],
     );
 
@@ -96,13 +96,7 @@ class BuildConfigManager {
       return null;
     }
 
-    /// 按照最新创建时间排序
-    documents.documents.sort((a, b) {
-      return DateTime.parse(a.$createdAt)
-          .compareTo(DateTime.parse(b.$createdAt));
-    });
-
-    final document = documents.documents.last;
+    final document = documents.documents.first;
     final buildInfo = BuildInfo.fromJson({
       'flutter': JSON(document.data)['flutter_conmit'].stringValue,
       'unity': BuildUnityConfig.fromJson({
