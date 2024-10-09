@@ -116,10 +116,19 @@ class Environment {
       umengMessageSecret: env('UMENG_MESSAGE_SECRET'),
       umengChannel: env('UMENG_CHANNEL'),
     );
-    final customBuildNumber = env('BUILD_NUMBER', false);
-    buildNumber = customBuildNumber.isNotEmpty
-        ? JSON(customBuildNumber).intValue
-        : DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    final customBuildNumber = JSON(env('BUILD_NUMBER', false)).intValue;
+
+    int formatterBuildNumber(String buildNumber) {
+      if (buildNumber.length <= 10) return JSON(buildNumber).intValue;
+      return JSON(buildNumber.substring(0, 10)).intValue;
+    }
+
+    if (customBuildNumber > 0) {
+      buildNumber = formatterBuildNumber(customBuildNumber.toString());
+    } else {
+      buildNumber = formatterBuildNumber(
+          DateTime.now().millisecondsSinceEpoch.toString());
+    }
     forceBuild = env('FORCE_BUILD') == 'true';
     unityBranchName = env('UNITY_BRANCH_NAME');
     upload = env('UPLOAD') == 'true';
