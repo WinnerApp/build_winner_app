@@ -106,7 +106,8 @@ fvm flutter pub get
 ''');
 
     await Shell(workingDirectory: '${environment.workspace}/ios').run('''
-pod install
+rm -rf Podfile.lock
+pod install --repo-update
 xcodebuild -workspace Runner.xcworkspace -scheme Runner -archivePath ../build/ios/Runner.xcarchive -configuration Release archive
 xcodebuild -exportArchive -archivePath ../build/ios/Runner.xcarchive -exportPath ../build/ios/ipa -exportOptionsPlist ExportOptions.plist
 ''');
