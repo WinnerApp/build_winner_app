@@ -45,6 +45,7 @@ abstract class BaseBuildCommand extends Command {
       'sentry_properties_path',
       help: 'sentry.properties 的配置文件',
     );
+    argParser.addOption('fastfile', help: '自定义加载Fastfile文件配置');
   }
 
   /// 当前打包运行环境的参数
@@ -81,6 +82,9 @@ abstract class BaseBuildCommand extends Command {
       'sentryPropertiesPath: $sentryPropertiesPath',
       status: LogStatus.debug,
     );
+
+    final fastfile = JSON(argResults?['fastfile']).string;
+    logger.log('fastfile: $fastfile', status: LogStatus.debug);
 
     /// 初始化环境变量 提示用户必须设置对应的环境变量
     environment.setup(!skipUnityUpdate);
@@ -309,7 +313,9 @@ ${log.isEmpty ? "暂无更新内容" : log}
         .run('fvm flutter pub run dart_define generate');
 
     /// 初始化Fastlane 支持后面上传iPA或者APK
-    await setupFastlane.setup();
+    final fastfileContent =
+        await Unwrap(fastfile).map((e) => File(e).readAsString()).value;
+    await setupFastlane.setup(fastfileContent);
 
     /// 进行打包
     await build(environment.workspace);
