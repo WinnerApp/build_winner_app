@@ -1,3 +1,8 @@
+## 3.0.0-beta31
+
+- [Change] 修改了iOS fastlane的配置
+- [Add] 新增fastfile支持配置外部fastfile文件
+
 ## 3.0.0-beta30
 
 - [Fix] 修复打包iOS因为pod库版本问题报错
