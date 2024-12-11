@@ -75,6 +75,8 @@ class Environment {
   /// 当前安卓的渠道
   late String androidChannel;
 
+  late SentryEnvironment sentryEnvironment;
+
   setup(bool updateUnity) {
     workspace = env('WORKSPACE');
     iosHookUrl = env('IOS_HOOK_URL');
@@ -138,6 +140,15 @@ class Environment {
     unityLastCommitHash = env('UNITY_LAST_COMMIT_HASH', false);
 
     androidChannel = env('androidChannel');
+
+    sentryEnvironment = SentryEnvironment(
+      project: env('SENTRY_PROJECT'),
+      org: env('SENTRY_ORG'),
+      authToken: env('SENTRY_AUTH_TOKEN'),
+      url: env('SENTRY_URL'),
+      release: '$buildName($buildNumber)',
+      dist: '$buildNumber',
+    );
   }
 
   String env(String name, [bool force = true]) {
@@ -204,5 +215,23 @@ class UmengPushEnvironment {
     required this.umengAppKey,
     required this.umengMessageSecret,
     required this.umengChannel,
+  });
+}
+
+class SentryEnvironment {
+  final String project;
+  final String org;
+  final String authToken;
+  final String url;
+  final String release;
+  final String dist;
+
+  const SentryEnvironment({
+    required this.project,
+    required this.org,
+    required this.authToken,
+    required this.url,
+    required this.release,
+    required this.dist,
   });
 }
