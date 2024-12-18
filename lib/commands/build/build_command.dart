@@ -8,6 +8,7 @@ import 'package:build_winner_app/common/build_config.dart';
 import 'package:build_winner_app/common/define.dart';
 import 'package:build_winner_app/environment.dart';
 import 'package:build_winner_app/get_git_log.dart';
+import 'package:build_winner_app/git_reset.dart';
 import 'package:build_winner_app/setup_fastlane.dart';
 import 'package:build_winner_app/upload_sentry.dart';
 import 'package:color_logger/color_logger.dart';
@@ -101,19 +102,11 @@ abstract class BaseBuildCommand extends Command {
 
     /// 如果不跳过Unity自动更新则获取对应的Uity提交
     if (unityFullPath != null) {
+      await gitReset(unityFullPath!);
+
       /// 如果当前的分支和目标分支不是一个分支 则切换
       if (await getLocalBranchName(unityFullPath!) !=
           environment.unityBranchName) {
-        await runCommand(
-          unityFullPath!,
-          'git reset --hard',
-        );
-
-        /// 拉取最新的服务器代码 防止有的分支无法切换
-        await runCommand(
-          unityFullPath!,
-          'git pull origin',
-        );
         await runCommand(
           unityFullPath!,
           'git switch ${environment.unityBranchName} -f',
@@ -146,6 +139,8 @@ abstract class BaseBuildCommand extends Command {
 
     /// 如果当前的分支和目标分支不是一个分支 则切换
     if (await getLocalBranchName(environment.workspace) != environment.branch) {
+      await gitReset(environment.workspace);
+
       await runCommand(
         environment.workspace,
         'git switch ${environment.branch} -f',
