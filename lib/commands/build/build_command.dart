@@ -234,7 +234,7 @@ $logFooter
     }
 
     _log =
-        '[Flutter(${environment.branch})][Unity(${environment.unityBranchName})]  新版本发布了，请下载体验!';
+        '[Tag:$tag][Flutter(${environment.branch})][Unity(${environment.unityBranchName})]  新版本发布了，请下载体验!';
 
     logger.log('''
 更新日志:
