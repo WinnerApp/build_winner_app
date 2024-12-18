@@ -39,6 +39,6 @@ gitReset(String workingDirectory) async {
 
   await runCommand(
     workingDirectory,
-    'git pull origin',
+    'git fetch origin',
   );
 }
