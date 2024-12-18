@@ -186,7 +186,7 @@ abstract class BaseBuildCommand extends Command {
 
       if (JSON(unityLog).stringValue.isNotEmpty) {
         log += '''
-Unity更新日志:
+Unity更新日志:$remoteUnityCommit
 $unityLog
 
 ''';
@@ -214,7 +214,7 @@ $unityLog
 
       if (JSON(rootLog).stringValue.isNotEmpty) {
         log += '''
-Flutter更新日志:
+Flutter更新日志:$remoteRootCommit
 $rootLog
 
 ''';
@@ -226,7 +226,8 @@ $rootLog
 
     if (log.isNotEmpty) {
       log = '''
-[Branch]: ${environment.branch}
+[Flutter]: ${environment.branch}
+[Unity]: ${environment.unityBranchName}
 [Tag]: ${tag ?? ''}
 [version]: ${environment.buildName}(${environment.buildNumber})
 $logHeader
@@ -237,7 +238,8 @@ $logFooter
 ''';
     }
 
-    _log = '[Branch] ${environment.branch} 新版本发布了，请下载体验!';
+    _log =
+        '[Flutter(${environment.branch})][Unity(${environment.unityBranchName})]  新版本发布了，请下载体验!';
 
     logger.log('''
 更新日志:
