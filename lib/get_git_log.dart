@@ -23,7 +23,7 @@ class GetGitLog {
     }
     ProcessResult result;
     if (currentCommitId == null) {
-      result = await runCommand(root, 'git log -1').then(
+      result = await runCommand(root, 'git log -n 10').then(
         (value) => value.first,
       );
     } else {

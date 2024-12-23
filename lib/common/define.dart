@@ -108,6 +108,7 @@ String formatGitLog(String flutterLog, String unityLog) {
           .any((e) => log.toLowerCase().startsWith(e.toLowerCase()))) {
         continue;
       }
+      logs.add(log);
     }
     return logs;
   }
