@@ -177,6 +177,7 @@ fvm flutter pub get
       environment: appwriteEnvironment,
       platform: 'android',
       branch: environment.branch,
+      unityBranch: environment.unityBranchName,
     );
   }
 }

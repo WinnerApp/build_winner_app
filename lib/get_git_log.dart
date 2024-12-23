@@ -22,7 +22,7 @@ class GetGitLog {
       exit(2);
     }
     ProcessResult result;
-    if (currentCommitId == null) {
+    if (currentCommitId == null || currentCommitId!.isEmpty) {
       result = await runCommand(root, 'git log -n 10').then(
         (value) => value.first,
       );

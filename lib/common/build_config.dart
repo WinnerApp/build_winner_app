@@ -72,11 +72,14 @@ class BuildConfigManager {
   final AppwriteEnvironment environment;
   final String platform;
   final String branch;
+  final String unityBranch;
 
-  const BuildConfigManager(
-      {required this.environment,
-      required this.platform,
-      required this.branch});
+  const BuildConfigManager({
+    required this.environment,
+    required this.platform,
+    required this.branch,
+    required this.unityBranch,
+  });
 
   Future<BuildInfo?> getBuildConfig() async {
     final appwriteServer = AppwriteServer(environment);
@@ -88,6 +91,7 @@ class BuildConfigManager {
       queries: [
         Query.equal('platform', platform),
         Query.equal('branch', branch),
+        Query.equal('unity_branch', unityBranch),
         Query.orderDesc('\$createdAt'),
       ],
     );
@@ -129,6 +133,7 @@ class BuildConfigManager {
           'unity_cache_commit': JSON(buildInfo?.unity.cache).stringValue,
           'unity_log_commit': JSON(buildInfo?.unity.log).stringValue,
           'branch': branch,
+          'unity_branch': unityBranch,
         },
       );
       return true;

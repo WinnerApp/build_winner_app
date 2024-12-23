@@ -186,6 +186,7 @@ xcodebuild -exportArchive -archivePath ../build/ios/Runner.xcarchive -exportPath
       environment: appwriteEnvironment,
       platform: 'ios',
       branch: environment.branch,
+      unityBranch: environment.unityBranchName,
     );
   }
 
