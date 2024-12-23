@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:build_winner_app/environment.dart';
 import 'package:color_logger/color_logger.dart';
@@ -98,19 +99,28 @@ Future<String> getLocalBranchName(String root) => runCommand(
       'git rev-parse --abbrev-ref HEAD',
     ).then((value) => value.first.stdout.toString().trim());
 
-String formatGitLog(String log) {
-  final logs = [];
-  for (var log in log.split("\n")) {
-    /// 如果当前行存在以下关键字 则忽略
-    if (['commit', 'Author', 'Date', 'Merge', '# Conflicts', '#    ']
-        .any((e) => log.toLowerCase().startsWith(e.toLowerCase()))) {
-      continue;
+String formatGitLog(String flutterLog, String unityLog) {
+  List<String> filterLogs(String log) {
+    List<String> logs = [];
+    for (var log in log.split("\n")) {
+      /// 如果当前行存在以下关键字 则忽略
+      if (['commit', 'Author', 'Date', 'Merge', '# Conflicts', '#    ']
+          .any((e) => log.toLowerCase().startsWith(e.toLowerCase()))) {
+        continue;
+      }
     }
+    return logs;
+  }
 
-    /// 修复重复的日志
-    if (!logs.contains(log)) {
-      logs.add(log);
-    }
+  List<String> logs = [];
+  final flutterLogs = filterLogs(flutterLog);
+  final unityLogs = filterLogs(unityLog);
+  if (flutterLogs.length + unityLogs.length > 100) {
+    logs.addAll(unityLogs.sublist(0, max(unityLogs.length, 30)));
+    logs.addAll(flutterLogs.sublist(0, max(flutterLogs.length, 30)));
+  } else {
+    logs.addAll(unityLogs);
+    logs.addAll(flutterLogs);
   }
   return logs.join('\n');
 }

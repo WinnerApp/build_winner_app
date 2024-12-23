@@ -159,6 +159,9 @@ abstract class BaseBuildCommand extends Command {
 
     var log = '';
 
+    String flutterLog = '';
+    String unityLog = '';
+
     /// 如果unity最后一次日志的ID和目前远程的不是一致 并且没有跳过Unity更新
     if (buildInfo.unity.log != remoteUnityCommit && unityFullPath != null) {
       /// 将Unity更新到最新
@@ -173,17 +176,17 @@ abstract class BaseBuildCommand extends Command {
       // }
 
       /// 获取Unity更新日志
-      final unityLog = await GetGitLog(
-        root: unityFullPath!,
-        lastCommitId: remoteUnityCommit!,
-        currentCommitId: currentCommitId,
-      ).get();
+      unityLog = await GetGitLog(
+            root: unityFullPath!,
+            lastCommitId: remoteUnityCommit!,
+            currentCommitId: currentCommitId,
+          ).get() ??
+          '';
 
       if (JSON(unityLog).stringValue.isNotEmpty) {
-        log += '''
+        unityLog += '''
 Unity更新日志:$remoteUnityCommit
 $unityLog
-
 ''';
       }
     }
@@ -201,23 +204,23 @@ $unityLog
       // }
 
       /// 获取当前打包工程的更新日志
-      final rootLog = await GetGitLog(
-        root: environment.workspace,
-        lastCommitId: remoteRootCommit,
-        currentCommitId: currentCommitId,
-      ).get();
+      flutterLog = await GetGitLog(
+            root: environment.workspace,
+            lastCommitId: remoteRootCommit,
+            currentCommitId: currentCommitId,
+          ).get() ??
+          '';
 
-      if (JSON(rootLog).stringValue.isNotEmpty) {
-        log += '''
+      if (JSON(flutterLog).stringValue.isNotEmpty) {
+        flutterLog += '''
 Flutter更新日志:$remoteRootCommit
-$rootLog
-
+$flutterLog
 ''';
       }
     }
 
     /// 格式化当前的日志
-    log = formatGitLog(log);
+    log = formatGitLog(flutterLog, unityLog);
 
     if (log.isNotEmpty) {
       log = '''
