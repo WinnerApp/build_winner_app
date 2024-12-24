@@ -184,7 +184,7 @@ abstract class BaseBuildCommand extends Command {
           '';
 
       if (JSON(unityLog).stringValue.isNotEmpty) {
-        unityLog += '''
+        unityLog = '''
 Unity更新日志:$remoteUnityCommit
 $unityLog
 ''';
@@ -212,7 +212,7 @@ $unityLog
           '';
 
       if (JSON(flutterLog).stringValue.isNotEmpty) {
-        flutterLog += '''
+        flutterLog = '''
 Flutter更新日志:$remoteRootCommit
 $flutterLog
 ''';
