@@ -28,7 +28,15 @@ class ExportCommand extends Command {
 
     /// 当前打包运行环境的参数
     Environment environment = Environment();
-    environment.setup(true);
+    environment.setup(
+      true,
+      allowVerifyKeys: [
+        "UNITY_WORKSPACE",
+        "IOS_UNITY_PATH",
+        "ANDROID_UNITY_PATH",
+        "UNITY_ENGINE_PATH",
+      ],
+    );
 
     final unityEnvironment = environment.unityEnvironment;
     if (unityEnvironment == null) {

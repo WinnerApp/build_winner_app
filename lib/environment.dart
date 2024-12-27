@@ -77,7 +77,13 @@ class Environment {
 
   late SentryEnvironment sentryEnvironment;
 
-  setup(bool updateUnity) {
+  List<String>? allowVerifyKeys;
+
+  setup(
+    bool updateUnity, {
+    List<String>? allowVerifyKeys,
+  }) {
+    this.allowVerifyKeys = allowVerifyKeys;
     workspace = env('WORKSPACE');
     iosHookUrl = env('IOS_HOOK_URL');
     androidHookUrl = env('ANDROID_HOOK_URL');
@@ -153,7 +159,9 @@ class Environment {
 
   String env(String name, [bool force = true]) {
     if (Platform.environment[name] == null) {
-      if (force) {
+      bool allowVerify =
+          allowVerifyKeys == null || allowVerifyKeys!.contains(name);
+      if (force && allowVerify) {
         logger.log('$name 环境变量未配置', status: LogStatus.error);
         exit(1);
       } else {
