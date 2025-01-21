@@ -117,8 +117,8 @@ String formatGitLog(String flutterLog, String unityLog) {
   final flutterLogs = filterLogs(flutterLog);
   final unityLogs = filterLogs(unityLog);
   if (flutterLogs.length + unityLogs.length > 100) {
-    logs.addAll(unityLogs.sublist(0, max(unityLogs.length, 30)));
-    logs.addAll(flutterLogs.sublist(0, max(flutterLogs.length, 30)));
+    logs.addAll(unityLogs.sublist(0, min(unityLogs.length, 30)));
+    logs.addAll(flutterLogs.sublist(0, min(flutterLogs.length, 30)));
   } else {
     logs.addAll(unityLogs);
     logs.addAll(flutterLogs);
