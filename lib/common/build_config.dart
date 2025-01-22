@@ -94,7 +94,10 @@ class BuildConfigManager {
         Query.equal('unity_branch', unityBranch),
         Query.orderDesc('\$createdAt'),
       ],
-    );
+    ).catchError((e) {
+      logger.log(e.toString(), status: LogStatus.error);
+      throw e;
+    });
 
     if (documents.documents.isEmpty) {
       return null;

@@ -5,3 +5,5 @@ launch.json
 appwrite.yaml
 test.sh
 pubspec.lock
+bin/test_get_config.dart
+test/build_winner_app_test.dart
