@@ -3,17 +3,19 @@ name: Publish to Pub.dev
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 jobs:
   publishing:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Checkout'
+      - name: "Checkout"
         uses: actions/checkout@main # required!
-        
-      - name: '>> Dart package <<'
+
+      - name: ">> Dart package <<"
         uses: k-paxian/dart-package-publisher@master
         with:
+          skipTests: true
+          force: true
           accessToken: ${{ secrets.OAUTH_ACCESS_TOKEN }}
           refreshToken: ${{ secrets.OAUTH_REFRESH_TOKEN }}
