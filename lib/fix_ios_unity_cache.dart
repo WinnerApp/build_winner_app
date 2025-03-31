@@ -32,8 +32,7 @@ class FixIosUnityCache {
     logger.log('修复iOS不支持BitCode完毕!', status: LogStatus.success);
 
     if (!await Directory(iosBuidDir).exists()) {
-      logger.log('$iosBuidDir路径不存在,请先通过Unity导出包!', status: LogStatus.error);
-      return false;
+      return true;
     }
 
     /// 删除之前的缓存
