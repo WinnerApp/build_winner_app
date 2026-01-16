@@ -46,12 +46,19 @@ abstract class BaseCacheCommand extends Command {
 
   @override
   FutureOr? run() async {
+    for(var key in Platform.environment.keys) {
+      print('$key: ${Platform.environment[key]}');
+    }
     /// 获取操作缓存的项目主目录
-    root = argResults?['root'] ?? Platform.environment['PWD']!;
+    root = argResults?['root'] ?? Platform.environment['PWD'] ?? "";
+    if (root.isEmpty) {
+      logger.log('项目根目录不能为空!', status: LogStatus.error);
+      exit(1);
+    }
+
     final iosUnityPath =
-        argResults?['iosUnityPath'] ?? join('unity', 'meta_winner_unity_ios');
-    final androidUnityPath = argResults?['androidUnityPath'] ??
-        join('unity', 'meta_winner_unity_android');
+        Platform.environment["IOS_UNITY_PATH"] ?? "";
+    final androidUnityPath = Platform.environment["ANDROID_UNITY_PATH"] ?? "";
     iosUnityDir = Directory(join(root, iosUnityPath));
     if (!await iosUnityDir.exists()) {
       logger.log('${iosUnityDir.path}路径不存在!', status: LogStatus.error);

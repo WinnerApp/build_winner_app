@@ -26,6 +26,7 @@ void main(List<String> arguments) async {
     ..addCommand(SendTextToWebHooksCommand())
     ..addCommand(UploadApkChannel())
     ..addCommand(ExportCommand());
+    print("arguments0: $arguments0");
   await engine.run();
 
   // final runner = CommandRunner(
