@@ -5,3 +5,4 @@ launch.json
 appwrite.yaml
 test.sh
 .history
+pubspec.lock
